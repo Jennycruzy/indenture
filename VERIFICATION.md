@@ -142,11 +142,43 @@ Hooks (`hooks/fhecounter-example/useFHECounterWagmi.tsx`):
 `allowedTransient(bytes32,address)`, `isAllowedForDecryption(bytes32)`.
 Harness encrypt helpers confirmed: `encryptUint64(v,user,target)`, `encryptBool(v,user,target)`, `encryptAddress(v,user,target)`.
 
+## 6c. Cross-contract ACL grant pattern for Order II (verified — the composability hinge)
+
+Read verbatim from `dependencies/forge-fhevm-eba2324/src/fhevm-host/contracts/ACL.sol`:
+
+- `allow(bytes32 handle, address account)` (L186) — **persistent** grant
+  (`persistedAllowedPairs[handle][account] = true`). Requires the **caller** to itself be
+  `isAllowed(handle, msg.sender)` or it reverts (`SenderNotAllowed`). → a contract can only grant on a
+  handle it already owns.
+- `allowTransient(bytes32 handle, address account)` (L233) — **tx-scoped** grant (transient storage);
+  same caller requirement.
+- `isAllowed(handle, acct)` (L430) = `allowedTransient(handle,acct) || persistAllowed(handle,acct)`.
+- A homomorphic op (`FHE.ge`, etc.) is performed **by the calling contract**; the executor rejects it
+  unless that contract is `isAllowed` on **every** operand.
+
+**Verified pattern (`ConfidentialFeed` → `SealedSettlement` → `Indenture`):**
+
+1. **Feed** internalizes its value, then `FHE.allowThis(v)` + `FHE.allow(v, consumer)`. The second is
+   the cross-contract, **cross-tx** grant that lets the consumer compute on `v` in a later settlement tx.
+2. **Consumer** (`SealedSettlement.exercise`) computes `ebool inTheMoney = FHE.ge(feed.value(), strike)`
+   — allowed on `feed.value()` (persistent grant from step 1) and on `strike` (its own `allowThis`). The
+   **strike never crosses the boundary**; only the sealed boolean does.
+3. Consumer hands the engine tx-scoped access: `FHE.allowTransient(inTheMoney, engine)` +
+   `FHE.allowTransient(notional, engine)`, then calls `engine.settleWithCondition(...)`. The engine ANDs
+   `extraOk` into the mandate and settles via its single `FHE.select` path.
+
+Proven in isolation first by `test/CrossContractProbe.t.sol` (positive: granted consumer computes;
+**negative: an ungranted consumer's compute reverts** — so the harness enforces operand-ACL on
+cross-contract compute, not just decryption). Order II suite `test/SealedSettlement.t.sol` (10/10) then
+proves ITM payout, OTM→0, ANDed-with-mandate composition, the sealed strike (buyer/publisher/public
+never granted), and the consumer-as-agent blind to the mandate. **Local harness only; Sepolia tx hashes
+still required for done.**
+
 ## 7. OPEN ITEMS to confirm just-in-time
 
 - [x] `encryptUint64` / `encryptBool` — confirmed present in `FhevmTest.sol`.
-- [ ] Cross-contract ACL grant pattern for Order II (Phase 3) — reproduce a minimal 2-contract test
-      on Sepolia before wiring `SealedSettlement`. **Do not improvise (build-prompt §3 / Phase 3 warning).**
+- [x] Cross-contract ACL grant pattern for Order II (Phase 3) — verified against `ACL.sol` and proven on
+      the harness (probe + Order II suite, §6c). **Still pending: reproduce on real Sepolia (needs funded key).**
 - [ ] Real per-settlement gas on Sepolia vs the 16.7M block limit (Phase 6 performance honesty).
 - [ ] **Sepolia deploy of a trivial contract + browser user-decryption screenshot = the other half of
       Evidence Gate 0. BLOCKED on user-provided funded key + RPC.** Local pipeline is proven (3/3 harness tests).
