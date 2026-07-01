@@ -19,8 +19,13 @@ paths = [
   '''pnpm-lock\.yaml''',
 ]
 
-# Anvil default account #0 — publicly documented in foundry's docs and in
-# every FHEVM template. Not a real secret.
+# Public constants that trip the entropy-based generic-api-key rule but are not
+# secrets. A stopword suppresses a finding when the matched secret contains it.
 stopwords = [
+  # Anvil default account #0 — publicly documented in foundry's docs and in
+  # every FHEVM template. Not a real secret.
   "0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80",
+  # Public Polygon (MATIC) native-token address — a stock scaffold-eth
+  # `nativeCurrencyTokenAddress` config constant (packages/nextjs/utils/helper/networks.ts).
+  "0x7D1AfA7B718fb893dB30A3aBc0Cfc608AaCfeBB0",
 ]
