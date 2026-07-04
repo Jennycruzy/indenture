@@ -128,6 +128,26 @@ Hooks (`hooks/fhecounter-example/useFHECounterWagmi.tsx`):
 - **Gas:** FHE ops are gas-heavy — cap tx `gas` below Sepolia block limit `16_777_216` (template uses `15_000_000`).
   The INDENTURE settlement does many more FHE ops than the counter → **measure real gas; may need to split logic.**
 
+## 5b. VEIL frontend hooks (verified against installed `@zama-fhe/react-sdk@3` + `next build`)
+
+The Sealed Corridor UI (`app/{operator,sender,officer}`, `components/veil/*`, `hooks/veil/*`) reuses the
+exact SDK surface proven by the counter example (§5). Confirmed against the installed package `.d.ts`
+(`node_modules/@zama-fhe/react-sdk/dist/index.d.ts`) — not assumed:
+
+- `useEncrypt()` → mutation; `mutateAsync({ values:[{value, type}], contractAddress, userAddress })`. Encryptable
+  `type` union in `@zama-fhe/sdk` includes `"euint64"`, `"ebool"`, `"eaddress"` (grepped). VEIL uses
+  `"euint64"` for amounts / ceiling / fund, `"ebool"` for the screening bit.
+- `useUserDecrypt({ handles:[{handle, contractAddress}] }, { enabled })` — the officer decrypt. `contractAddress`
+  is the contract whose ACL granted the officer: the **Corridor** for the ceiling + per-sender total, the
+  **engine** for the mandate limits + the `Settled` outcome handle.
+- `useAllow(options?)` (mutation over `Address[]`) + `useIsAllowed({ contractAddresses })` (query → boolean).
+  `useIsAllowed`'s config types `contractAddresses` as a **non-empty tuple** `[Address, ...Address[]]`; the reveal
+  path is gated by `hasTargets` so an empty set never decrypts.
+- viem type note: the token's `setOperator(address, uint48)` — viem maps `uint48` to **`number`**, not `bigint`.
+- The whole frontend passes `tsc --noEmit` and a production `next build`. The only build warnings are the
+  template's pre-existing optional-dep notices (`@react-native-async-storage/async-storage` under MetaMask SDK;
+  the `ox`/`viem` `tempo` "critical dependency" expression) — not from VEIL code.
+
 ## 6. Env vars (from `.env.example`, consumed by `scripts/deploy-sepolia.sh`)
 
 `SEPOLIA_RPC_URL`, `DEPLOYER_PRIVATE_KEY`, `ETHERSCAN_API_KEY` (optional). Frontend also uses
@@ -213,6 +233,41 @@ block.timestamp >= anchor + window`. `windowStart == 0` is the never-seen-sender
 **Build config:** `via_ir = true` added to `foundry.toml`. `commitMandateFor` (10 params incl. 3 dynamic
 `bytes`) plus the deep sealed predicate exceed the legacy stack-based codegen; the IR pipeline is the
 canonical fix with the optimizer already on. Semantics unchanged — verified by the full green suite.
+
+## 6e. Off-ramp provider — sandbox (Phase C2, partial verification; STOP-and-report on funding)
+
+Provider selected: **Flutterwave (v4 Transfers / Direct Transfers API)** — a licensed pan-African PSP with
+an openly documented sandbox. Same off-ramp role as any fiat-payout PSP; nothing in the corridor design (the
+`moved > 0` officer-decrypt trigger below, the server-side-only key, the typed adapter seam) depends on which
+provider fills it. Confirmed from live public docs (2026-07):
+
+- Docs portal: `https://developer.flutterwave.com` — **openly fetchable, NOT Cloudflare-gated**, so the exact
+  endpoint path, auth model, and request/response schema are confirmable directly rather than blocked (contrast
+  an earlier crypto-vault PSP evaluation whose docs 403'd automated fetchers).
+- Auth (**v4**): **OAuth 2.0 client-credentials** — a sandbox **Client ID + Client Secret** are exchanged for a
+  short-lived bearer token at `POST https://idp.flutterwave.com/realms/flutterwave/protocol/openid-connect/token`,
+  and that token authorizes API calls. (v3, still live, uses a static `Authorization: Bearer FLWSECK_TEST-…`
+  secret key.) The secret lives **server-side only** — never in the frontend, never committed.
+- Sandbox base URL: `https://developersandbox-api.flutterwave.com`. Sandbox credentials are issued **instantly
+  on email verification** (no partner-onboarding gate, no business documents upfront) — a practical advantage
+  over a crypto-vault PSP for a sandbox-only demo.
+- Confirmed capability: a test environment mirroring production; single payouts to a beneficiary via **Bank
+  Transfer or Mobile Money** through `POST /direct-transfers` (`action`: instant/defer/schedule + a
+  `payment_instruction` object), funded from a Flutterwave balance (a test wallet in sandbox).
+
+**Honest status:** the concrete `payment_instruction` sub-schema for a specific NGN bank-transfer payout and a
+runnable sandbox call are **pending a sandbox account** (Client ID + Secret, issued instantly on email
+verification — a light unblock, not a KYC/onboarding gate). Per Phase C2 we **STOP and report** rather than
+fund a float or complete production KYC — the edge is a sandbox demonstration by design. The listener is built
+to a typed provider-adapter seam so wiring verified sandbox credentials is a config step, not a rewrite; the
+key lives server-side only and is never shipped in the frontend or committed.
+
+**Trigger honesty (repo-vs-prompt, Law 1):** the corridor emits `CorridorTransfer` (public ordering only) and
+the engine emits `Settled(id, nonce, receipt, outcomeHandle)` — neither reveals whether a transfer **cleared**
+(moved > 0) or was **nullified** (moved = 0); that is sealed. So a correct listener cannot fire on the raw
+event alone. The honest design: the listener runs as the **compliance-officer identity**, does a real
+user-decryption of `outcomeHandle` server-side, and calls the sandbox payout **only when `moved > 0`** — the
+fiat leg is genuinely caused by (and proportional to) a real on-chain clear, not a bare event.
 
 ## 7. OPEN ITEMS to confirm just-in-time
 

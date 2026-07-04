@@ -77,10 +77,11 @@ frontend guards.
 
 ### Off-ramp edge — sandbox payout (Evidence Gate C2)
 
-> Blocked on a Nigerian PSP sandbox account/key (Yellow Card / Fonbnk / equivalent). The listener fires a
-> REAL sandbox payout on a genuine on-chain "transfer cleared" event; key server-side only; labeled SANDBOX.
+> Blocked on a Flutterwave sandbox account (v4 Client ID + Secret, issued instantly on email verification).
+> The listener fires a REAL sandbox payout on a genuine on-chain "transfer cleared" event; key server-side
+> only; labeled SANDBOX.
 
-- Provider + sandbox endpoint/schema recorded in `VERIFICATION.md`: `TBD`
+- Provider + sandbox endpoint/auth recorded in `VERIFICATION.md §6e`: ✅ Flutterwave v4 · `POST /direct-transfers` · OAuth2 client-credentials (full `payment_instruction` run still `TBD`)
 - Captured run: real Sepolia clear event → real sandbox payout call + provider reference id: `TBD`
 
 ## Performance honesty (Phase 6)

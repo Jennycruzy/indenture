@@ -51,16 +51,21 @@ Uncommitted working changes at snapshot: `styles/globals.css` (modified), `contr
 `forge test` run 2026-07-04 on this machine (forge 1.7.1):
 
 ```
+CorridorTest           14 passed   ← Phase B (net-new: velocity accumulator, rollover, officer-only decrypt)
 CrossContractProbeTest  3 passed
 FHECounterTest          3 passed
 IndentureTest          12 passed
 SealedSettlementTest   10 passed
 --------------------------------
-TOTAL                  28 passed · 0 failed · 0 skipped
+TOTAL                  42 passed · 0 failed · 0 skipped
 ```
 
-**Baseline = 28/28 green on the cleartext harness.** This is the regression floor (Law 4): after every
-change the suite must still be 28/28 (plus the new Corridor tests), never weakened.
+**Baseline: the pre-VEIL floor was 28/28; after Phase B it is 42/42** on the cleartext harness. This is
+the regression floor (Law 4): the original 28 must stay green (adapted only where roles were renamed,
+never weakened) and the 14 new `Corridor.t.sol` tests — compliant clear, cap breach, screened-out,
+velocity breach across transfers, window rollover resets the encrypted total, at-ceiling boundary,
+per-sender independence, officer-only decrypt, blind-corridor, forged-input revert, replay, leak-audit —
+must remain green after every change.
 
 ---
 
@@ -103,7 +108,7 @@ Per-mandate consumers (`Leash`, `SealedSettlement`) and all encrypted settlement
 
 - **Phase C (real Sepolia corridor tx hashes)** requires a funded `DEPLOYER_PRIVATE_KEY` + `SEPOLIA_RPC_URL`.
   Per Law 3/8, these outcomes CANNOT be faked; they are produced only against the real coprocessor/KMS/relayer.
-- **Phase C2 (sandbox off-ramp payout)** requires a Nigerian PSP sandbox account + key.
+- **Phase C2 (sandbox off-ramp payout)** requires a Flutterwave sandbox account (v4 Client ID + Secret).
 - **Phase D (frontend)** definition-of-done is wallet-approved txs against the deployed Corridor.
 
 These three depend on user-provided secrets / network access. The engine + Corridor + full test suite

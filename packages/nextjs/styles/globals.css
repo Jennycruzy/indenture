@@ -136,3 +136,291 @@
 .link:hover {
   opacity: 80%;
 }
+
+/* ─────────────────────────────────────────────────────────────────────────
+   SEALED OBSIDIAN — INDENTURE's design language.
+   A serious confidential-finance instrument that feels quietly magical.
+   The app is its own visual world (near-black obsidian) regardless of theme.
+   ───────────────────────────────────────────────────────────────────────── */
+:root {
+  --ob-bg-0: #06070a;
+  --ob-bg-1: #0a0c12;
+  --ob-bg-2: #10131c;
+  --ob-line: #1b2030;
+  --ob-ink: #e7ecf5;
+  --ob-ink-dim: #9aa4b8;
+  --ob-ink-faint: #5b6479;
+
+  /* sealed / encrypted — cold aurora */
+  --ob-seal-a: #5eead4;
+  --ob-seal-b: #6366f1;
+  --ob-seal-c: #a855f7;
+  /* settled / released — warm signal */
+  --ob-warm-a: #f5b14c;
+  --ob-warm-b: #ff8a4c;
+  /* nullified — desaturated slate */
+  --ob-null: #3a4150;
+  /* rejected — hard crimson */
+  --ob-crimson: #ff4d5e;
+  /* audit / lawful disclosure — authoritative green (officer view ONLY) */
+  --ob-audit: #38e8a0;
+}
+
+/* Lawful disclosure — the ONE authoritative color, used only when the compliance
+   officer decrypts a sealed value. Everywhere else, sealed values shimmer aurora. */
+.ob-audit-text {
+  color: var(--ob-audit);
+  text-shadow: 0 0 18px rgba(56, 232, 160, 0.35);
+}
+.ob-audit-chip {
+  border-color: rgba(56, 232, 160, 0.4);
+  color: var(--ob-audit);
+  background: rgba(56, 232, 160, 0.07);
+}
+
+/* The scout's-eye overlay — a faint scanning grain that says "outside observer". */
+.ob-scout {
+  position: relative;
+}
+.ob-scout::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: repeating-linear-gradient(0deg, rgba(94, 234, 212, 0.035) 0 1px, transparent 1px 3px);
+  mix-blend-mode: screen;
+  border-radius: inherit;
+}
+
+/* The sealed gate — a border checkpoint whose criteria no one can read. */
+.ob-gate {
+  border: 1px solid var(--ob-line);
+  border-radius: 16px;
+  background: linear-gradient(180deg, rgba(16, 19, 28, 0.9), rgba(6, 7, 10, 0.9));
+  transition: box-shadow 600ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+.ob-gate-sealed {
+  box-shadow:
+    0 0 0 1px rgba(99, 102, 241, 0.25) inset,
+    0 0 40px rgba(99, 102, 241, 0.08);
+}
+.ob-gate-cleared {
+  box-shadow:
+    0 0 0 1px rgba(255, 138, 76, 0.4) inset,
+    0 0 48px rgba(255, 138, 76, 0.16);
+}
+
+.obsidian {
+  background:
+    radial-gradient(1200px 700px at 50% -10%, rgba(99, 102, 241, 0.08), transparent 60%),
+    radial-gradient(900px 600px at 90% 10%, rgba(168, 85, 247, 0.06), transparent 55%), var(--ob-bg-0);
+  color: var(--ob-ink);
+  min-height: 100vh;
+  font-family: "Space Grotesk", "Inter Tight", ui-sans-serif, system-ui, sans-serif;
+}
+
+.ob-mono {
+  font-family: "IBM Plex Mono", "JetBrains Mono", ui-monospace, "SFMono-Regular", monospace;
+  font-feature-settings: "ss01";
+}
+
+.ob-display {
+  font-family: "Space Grotesk", "Inter Tight", ui-sans-serif, sans-serif;
+  letter-spacing: -0.02em;
+}
+
+.ob-card {
+  background: linear-gradient(180deg, var(--ob-bg-1), var(--ob-bg-0));
+  border: 1px solid var(--ob-line);
+  border-radius: 14px;
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.02) inset;
+}
+
+.ob-seal-text {
+  background: linear-gradient(90deg, var(--ob-seal-a), var(--ob-seal-b), var(--ob-seal-c));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.ob-warm-text {
+  background: linear-gradient(90deg, var(--ob-warm-a), var(--ob-warm-b));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Ciphertext as material — shimmering glyph strings that never read as a number. */
+.ob-cipher {
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  letter-spacing: 0.06em;
+  background: linear-gradient(90deg, var(--ob-seal-a), var(--ob-seal-b), var(--ob-seal-c), var(--ob-seal-a));
+  background-size: 300% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: ob-haze 5.5s ease-in-out infinite;
+}
+@keyframes ob-haze {
+  0%,
+  100% {
+    background-position: 0% 50%;
+    opacity: 0.85;
+  }
+  50% {
+    background-position: 100% 50%;
+    opacity: 1;
+  }
+}
+
+/* The decryption IS the magic — a focus-pull as glyphs resolve to a real number. */
+.ob-resolve {
+  animation: ob-focus-pull 720ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+@keyframes ob-focus-pull {
+  0% {
+    filter: blur(7px);
+    opacity: 0.2;
+    letter-spacing: 0.35em;
+  }
+  60% {
+    filter: blur(1px);
+    opacity: 1;
+    letter-spacing: 0.02em;
+  }
+  100% {
+    filter: blur(0);
+    opacity: 1;
+    letter-spacing: normal;
+  }
+}
+
+/* Non-compliance doesn't shout — it quietly crumbles toward zero. */
+.ob-crumble {
+  color: var(--ob-null);
+  animation: ob-crumble 900ms cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+@keyframes ob-crumble {
+  0% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  100% {
+    opacity: 0.45;
+    transform: translateY(6px) scale(0.96);
+    filter: saturate(0.2);
+  }
+}
+
+/* Latency as drama — the seam "considers" while the coprocessor works. */
+.ob-considering {
+  position: relative;
+  overflow: hidden;
+}
+.ob-considering::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(94, 234, 212, 0.14), rgba(168, 85, 247, 0.14), transparent);
+  transform: translateX(-100%);
+  animation: ob-shimmer 1.6s ease-in-out infinite;
+}
+@keyframes ob-shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.ob-seam {
+  background-image: repeating-linear-gradient(-45deg, var(--ob-line) 0 6px, transparent 6px 12px);
+  width: 2px;
+}
+
+.ob-fuse {
+  animation: ob-fuse 800ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+@keyframes ob-fuse {
+  0% {
+    box-shadow: 0 0 0 rgba(245, 177, 76, 0);
+  }
+  40% {
+    box-shadow: 0 0 34px rgba(255, 138, 76, 0.55);
+  }
+  100% {
+    box-shadow: 0 0 0 rgba(245, 177, 76, 0);
+  }
+}
+
+.ob-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.7rem 1.15rem;
+  border-radius: 10px;
+  border: 1px solid var(--ob-line);
+  background: var(--ob-bg-2);
+  color: var(--ob-ink);
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition:
+    transform 400ms cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 400ms ease,
+    background 400ms ease,
+    box-shadow 400ms ease;
+}
+.ob-btn:hover:not(:disabled) {
+  border-color: #2b3550;
+  transform: translateY(-1px);
+}
+.ob-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+.ob-btn-seal:not(:disabled) {
+  border-color: transparent;
+  background: linear-gradient(90deg, rgba(94, 234, 212, 0.16), rgba(99, 102, 241, 0.18), rgba(168, 85, 247, 0.16));
+  box-shadow: 0 0 0 1px rgba(99, 102, 241, 0.35) inset;
+}
+.ob-btn-warm:not(:disabled) {
+  border-color: transparent;
+  color: #1a1206;
+  background: linear-gradient(90deg, var(--ob-warm-a), var(--ob-warm-b));
+}
+.ob-btn-danger:not(:disabled) {
+  border-color: rgba(255, 77, 94, 0.4);
+  color: #ffd7db;
+  background: rgba(255, 77, 94, 0.08);
+}
+
+.ob-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.15rem 0.6rem;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  border: 1px solid var(--ob-line);
+  color: var(--ob-ink-dim);
+}
+
+.veil-input {
+  width: 100%;
+  padding: 0.6rem 0.85rem;
+  border-radius: 10px;
+  background: var(--ob-bg-2);
+  border: 1px solid var(--ob-line);
+  color: var(--ob-ink);
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 0.85rem;
+  outline: none;
+  transition: border-color 300ms ease;
+}
+.veil-input:focus {
+  border-color: var(--ob-seal-b);
+}
+.veil-input::placeholder {
+  color: var(--ob-ink-faint);
+}

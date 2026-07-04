@@ -1,121 +1,141 @@
 "use client";
 
-import { useAccount } from "wagmi";
-import { RainbowKitCustomConnectButton } from "~~/components/helper/RainbowKitCustomConnectButton";
-import { useFHECounterWagmi } from "~~/hooks/fhecounter-example/useFHECounterWagmi";
+import Link from "next/link";
+import { CipherGlyphs } from "~~/components/veil/CipherGlyphs";
+import { VeilShell } from "~~/components/veil/VeilShell";
 
-const buttonBase =
-  "inline-flex items-center justify-center px-6 py-3 font-semibold shadow-lg transition-all duration-200 hover:scale-105 " +
-  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-900 " +
-  "disabled:opacity-50 disabled:pointer-events-none disabled:cursor-not-allowed";
-const primaryButton = `${buttonBase} bg-[#FFD208] text-[#2D2D2D] hover:bg-[#A38025] focus-visible:ring-[#2D2D2D] cursor-pointer`;
-const secondaryButton = `${buttonBase} bg-black text-[#F4F4F4] hover:bg-[#1F1F1F] focus-visible:ring-[#FFD208] cursor-pointer`;
-const successButton = `${buttonBase} bg-[#A38025] text-[#2D2D2D] hover:bg-[#8F6E1E] focus-visible:ring-[#2D2D2D]`;
-const sectionClass = "bg-[#f4f4f4] shadow-lg p-6 mb-6 text-gray-900";
-const titleClass = "font-bold text-gray-900 text-xl mb-4 border-b-1 border-gray-700 pb-2";
+const rules = [
+  {
+    n: "01",
+    title: "Sealed per-transfer cap",
+    body: "The maximum a single transfer may move — held as ciphertext, checked homomorphically.",
+  },
+  {
+    n: "02",
+    title: "Sealed recipient screening",
+    body: "Allow / deny per recipient, default-deny. The address is public; whether they pass is sealed.",
+  },
+  {
+    n: "03",
+    title: "Sealed velocity ceiling",
+    body: "A per-sender encrypted running total that accumulates across transfers and resets on a public window — no decryption, no division.",
+  },
+];
+
+const consoles = [
+  {
+    href: "/operator",
+    title: "Operator console",
+    body: "Seal and rotate the policy — cap, screening, and velocity ceiling. You commit it; you can never read it.",
+  },
+  {
+    href: "/sender",
+    title: "Sender corridor",
+    body: "Submit a cross-border transfer. Watch it adjudicate against a rulebook you cannot see.",
+  },
+  {
+    href: "/officer",
+    title: "Compliance audit",
+    body: "The one role that can decrypt a flagged transfer — via EIP-712, on the record.",
+  },
+];
 
 export default function Home() {
-  const { isConnected } = useAccount();
-  const fheCounter = useFHECounterWagmi();
-
-  if (!isConnected) {
-    return (
-      <div className="flex flex-col gap-8 items-center sm:items-start w-full px-3 md:px-0">
-        <div className="max-w-6xl mx-auto p-6 text-gray-900">
-          <div className="flex items-center justify-center">
-            <div className="bg-white bordershadow-xl p-8 text-center">
-              <div className="mb-4">
-                <span className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-amber-900/30 text-amber-400 text-3xl">
-                  ⚠️
-                </span>
-              </div>
-              <h2 className="text-2xl font-extrabold text-gray-900 mb-2">Wallet not connected</h2>
-              <p className="text-gray-700 mb-6">Connect your wallet to use the FHE Counter demo.</p>
-              <div className="flex items-center justify-center">
-                <RainbowKitCustomConnectButton />
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
   return (
-    <div className="flex flex-col gap-8 items-center sm:items-start w-full px-3 md:px-0">
-      <div className="max-w-6xl mx-auto p-6 space-y-6 text-gray-900">
-        <div className="text-center mb-8 text-black">
-          <h1 className="text-3xl font-bold mb-2">FHE Counter Demo</h1>
-          <p className="text-gray-600">Interact with the Fully Homomorphic Encryption Counter contract</p>
+    <VeilShell showCorridorBar={false}>
+      {/* Hero */}
+      <section className="ob-card p-8 md:p-10">
+        <div className="ob-chip mb-5">a category of its own</div>
+        <h1 className="ob-display text-3xl md:text-5xl font-bold leading-tight" style={{ color: "var(--ob-ink)" }}>
+          Everyone else encrypts the payment
+          <br />
+          and <span className="ob-seal-text">publishes the rules</span>.
+        </h1>
+        <p className="ob-display text-2xl md:text-3xl font-semibold mt-3">
+          VEIL seals the <span className="ob-warm-text">rules</span>.
+        </p>
+        <p className="mt-5 max-w-2xl text-base md:text-lg" style={{ color: "var(--ob-ink-dim)" }}>
+          The cap, the screening list, and the velocity ceiling are all ciphertext. Every transfer is still checked
+          against them — but no one can read where the compliance line sits. Not the sender, not a bad actor probing it,
+          not a competitor, not the operator. Only a designated compliance officer can decrypt a specific flagged
+          transfer to audit it.
+        </p>
+        <div className="flex flex-wrap gap-3 mt-7">
+          <Link href="/sender" className="ob-btn ob-btn-warm no-underline">
+            Enter the corridor →
+          </Link>
+          <Link href="/operator" className="ob-btn ob-btn-seal no-underline">
+            Seal a policy
+          </Link>
+          <Link href="/officer" className="ob-btn no-underline">
+            Audit a transfer
+          </Link>
         </div>
+      </section>
 
-        <div className={sectionClass}>
-          <h3 className={titleClass}>🔢 Count Handle</h3>
-          <div className="space-y-3 space-x-3">
-            <div className="flex justify-between items-center py-2 px-3 bg-white border border-gray-200 w-full">
-              <span className="text-gray-800 font-medium">Encrypted Handle</span>
-              <span className="ml-2 font-mono text-sm font-semibold text-gray-900 bg-gray-100 px-2 py-1 border border-gray-300">
-                {fheCounter.handle || "No handle available"}
-              </span>
+      {/* The three sealed rules */}
+      <section>
+        <h2 className="ob-mono text-[0.72rem] uppercase tracking-widest mb-3" style={{ color: "var(--ob-ink-dim)" }}>
+          one predicate · three sealed rules
+        </h2>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {rules.map(r => (
+            <div key={r.n} className="ob-card p-5">
+              <div className="flex items-center justify-between mb-3">
+                <span className="ob-mono text-sm" style={{ color: "var(--ob-ink-faint)" }}>
+                  {r.n}
+                </span>
+                <CipherGlyphs seed={`${r.n}-${r.title}`} length={12} />
+              </div>
+              <div className="ob-display font-semibold text-lg mb-1" style={{ color: "var(--ob-ink)" }}>
+                {r.title}
+              </div>
+              <p className="text-sm" style={{ color: "var(--ob-ink-dim)" }}>
+                {r.body}
+              </p>
             </div>
-            <div className="flex justify-between items-center py-2 px-3 bg-white border border-gray-200 w-full">
-              <span className="text-gray-800 font-medium">Decrypted Value</span>
-              <span className="ml-2 font-mono text-sm font-semibold text-gray-900 bg-gray-100 px-2 py-1 border border-gray-300">
-                {fheCounter.isDecrypted ? fheCounter.clear : "Not decrypted yet"}
-              </span>
-            </div>
-          </div>
+          ))}
         </div>
+        <p className="text-sm mt-3" style={{ color: "var(--ob-ink-faint)" }}>
+          A breach nullifies the transfer to zero via a single <span className="ob-mono">FHE.select</span> — and reveals
+          which rule caught it to no one, because the chain can&rsquo;t. That is the anti-scouting property.
+        </p>
+      </section>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-black">
-          <button
-            className={fheCounter.isDecrypted ? successButton : primaryButton}
-            disabled={!fheCounter.canDecrypt}
-            onClick={fheCounter.decryptCountHandle}
-          >
-            {fheCounter.canDecrypt
-              ? "🔓 Decrypt Counter"
-              : fheCounter.isDecrypted
-                ? `✅ Decrypted: ${fheCounter.clear}`
-                : fheCounter.isDecrypting
-                  ? "⏳ Decrypting..."
-                  : "❌ Nothing to decrypt"}
-          </button>
-
-          <button
-            className={secondaryButton}
-            disabled={!fheCounter.canUpdateCounter}
-            onClick={() => fheCounter.updateCounter(+1)}
-          >
-            {fheCounter.canUpdateCounter
-              ? "➕ Increment +1"
-              : fheCounter.isProcessing
-                ? "⏳ Processing..."
-                : "❌ Cannot increment"}
-          </button>
-
-          <button
-            className={secondaryButton}
-            disabled={!fheCounter.canUpdateCounter}
-            onClick={() => fheCounter.updateCounter(-1)}
-          >
-            {fheCounter.canUpdateCounter
-              ? "➖ Decrement -1"
-              : fheCounter.isProcessing
-                ? "⏳ Processing..."
-                : "❌ Cannot decrement"}
-          </button>
+      {/* Consoles */}
+      <section>
+        <h2 className="ob-mono text-[0.72rem] uppercase tracking-widest mb-3" style={{ color: "var(--ob-ink-dim)" }}>
+          three roles
+        </h2>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {consoles.map(c => (
+            <Link
+              key={c.href}
+              href={c.href}
+              className="ob-card p-5 no-underline transition-transform hover:-translate-y-0.5"
+            >
+              <div className="ob-display font-semibold text-lg mb-1" style={{ color: "var(--ob-ink)" }}>
+                {c.title}
+              </div>
+              <p className="text-sm" style={{ color: "var(--ob-ink-dim)" }}>
+                {c.body}
+              </p>
+              <span className="ob-seal-text ob-mono text-xs mt-3 inline-block">open →</span>
+            </Link>
+          ))}
         </div>
+      </section>
 
-        {fheCounter.message && (
-          <div className={sectionClass}>
-            <h3 className={titleClass}>💬 Messages</h3>
-            <div className="border bg-white border-gray-200 p-4">
-              <p className="text-gray-800">{fheCounter.message}</p>
-            </div>
-          </div>
-        )}
-      </div>
-    </div>
+      {/* Honesty footer */}
+      <section className="ob-card p-5">
+        <p className="text-sm" style={{ color: "var(--ob-ink-dim)" }}>
+          <span className="ob-mono ob-audit-text">honest bounds:</span> the confidential transfer and the sealed
+          compliance policy are real on Sepolia via the FHEVM coprocessor / KMS / relayer. Local tests use Zama&rsquo;s
+          cleartext harness. The optional naira off-ramp is a licensed provider&rsquo;s <strong>sandbox</strong> payout
+          proving the integration — not production money movement. The engine identifier stays{" "}
+          <span className="ob-mono">Indenture</span>; VEIL is the product face.
+        </p>
+      </section>
+    </VeilShell>
   );
 }

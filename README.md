@@ -92,17 +92,17 @@ These are deliberate and are documented with their _why_ in the contract comment
 
 > **This is an unaudited demonstration** of one primitive across predicate shapes. It is not production-ready and has not been audited.
 
-| Piece                                                                         | State                                                                                     |
-| ----------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
-| `Indenture.sol` engine + Order I `Leash`                                      | ✅ built · 12 harness tests                                                               |
-| Order II `SealedSettlement` + `ConfidentialFeed`                              | ✅ built · 10 harness tests · cross-contract ACL probe (3 tests)                          |
-| **VEIL `Corridor` — sealed velocity accumulator**                             | ✅ built · 14 harness tests (cap/screen/velocity/rollover/combined/disclosure/leak-audit) |
-| Leak-audit + blind-agent + officer-disclosure                                 | ✅ passing (see `test/`) — **42/42 total**                                                |
-| Backbone live on Sepolia (engine + cToken + feed)                             | ✅ deployed + verified — see `DEPLOYMENTS.md`                                             |
-| Corridor Sepolia hashes (compliant + every rejection + officer audit decrypt) | ⏳ pending — needs a funded key (Gate C)                                                  |
-| Off-ramp sandbox payout (on-chain-triggered)                                  | ⏳ pending — needs a PSP sandbox key (Gate C2)                                            |
-| Sealed Corridor frontend (operator/sender/officer + scout's-eye)              | ⏳ pending (Phase D)                                                                      |
-| Order III (Tier 2)                                                            | 📋 roadmap spec only                                                                      |
+| Piece                                                                         | State                                                                                                   |
+| ----------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
+| `Indenture.sol` engine + Order I `Leash`                                      | ✅ built · 12 harness tests                                                                             |
+| Order II `SealedSettlement` + `ConfidentialFeed`                              | ✅ built · 10 harness tests · cross-contract ACL probe (3 tests)                                        |
+| **VEIL `Corridor` — sealed velocity accumulator**                             | ✅ built · 14 harness tests (cap/screen/velocity/rollover/combined/disclosure/leak-audit)               |
+| Leak-audit + blind-agent + officer-disclosure                                 | ✅ passing (see `test/`) — **42/42 total**                                                              |
+| Backbone live on Sepolia (engine + cToken + feed)                             | ✅ deployed + verified — see `DEPLOYMENTS.md`                                                           |
+| Corridor Sepolia hashes (compliant + every rejection + officer audit decrypt) | ⏳ pending — needs a funded key (Gate C)                                                                |
+| Off-ramp sandbox payout (on-chain-triggered)                                  | ⏳ pending — needs a PSP sandbox key (Gate C2)                                                          |
+| Sealed Corridor frontend (operator/sender/officer + scout's-eye)              | ✅ built · `tsc` + `next build` clean — wallet-driven Sepolia runs pending a deployed Corridor (Gate C) |
+| Order III (Tier 2)                                                            | 📋 roadmap spec only                                                                                    |
 
 **Real infra vs. local harness — stated plainly:** the local test suite runs on **Zama's own cleartext harness** (`forge-fhevm`) for fast iteration — that is a Zama-provided test host, _not_ the real coprocessor. **The real coprocessor, threshold-KMS decryption, and relayer only run on Sepolia**, so the definition of done is real Sepolia transaction hashes (tracked in `DEPLOYMENTS.md`), not green local tests. Nothing here fakes the relayer, encryption, input proof, ACL, user-decryption, or confidential transfer.
 
@@ -150,6 +150,24 @@ scripts/deploy-indenture-sepolia.sh   # deploys engine + demo cToken + Confident
 ```
 
 Per-mandate consumers (`Leash`, `SealedSettlement`) are deployed from the frontend, where the principal generates the client-side encrypted mandate inputs via the SDK. Record all addresses + tx hashes in [`DEPLOYMENTS.md`](DEPLOYMENTS.md).
+
+## Running the Sealed Corridor UI
+
+The `packages/nextjs` app is the **Sealed Corridor** — three role views over one corridor, in a near-black "border checkpoint whose rulebook is sealed" design language.
+
+```bash
+cd packages/nextjs
+cp .env.example .env.local      # set NEXT_PUBLIC_ALCHEMY_API_KEY, NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID
+# once a Corridor is deployed (Gate C): NEXT_PUBLIC_CORRIDOR_ADDRESS=0x…  (or paste it into the in-app corridor bar)
+pnpm dev                        # http://localhost:3000
+```
+
+- **`/operator`** — seal & rotate the policy (velocity ceiling, recipient screening, fund custody). Every value renders as shimmering ciphertext glyphs; the operator sets them yet holds no decrypt grant.
+- **`/sender`** — submit a transfer through the sealed gate; the amount is encrypted client-side and the outcome is sealed even to you. A sealed per-sender velocity meter shows a ceiling exists, never where.
+- **`/officer`** — connect as the compliance officer and decrypt a flagged transfer's sealed outcome via EIP-712 (authoritative-green resolve). Sender/operator get a visible "no decrypt grant."
+- **Scout's-eye toggle** (every view) — render the corridor as an outside on-chain observer sees it: only sealed glyphs, no amounts, no thresholds, no pass/fail.
+
+Client-side encryption uses `@zama-fhe/react-sdk` v3 (`useEncrypt`); user-decryption uses `useUserDecrypt` + `useAllow` (EIP-712). The browser never holds the FHE key. Every on-chain action is a wallet-approved tx firing the real FHEVM path; a rule breach is nullified **on-chain** (`FHE.select → 0`), never guarded in the frontend. See [`VERIFICATION.md` §5b](VERIFICATION.md).
 
 ## Roadmap
 

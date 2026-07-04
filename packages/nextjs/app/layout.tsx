@@ -5,8 +5,9 @@ import "~~/styles/globals.css";
 import { getMetadata } from "~~/utils/helper/getMetadata";
 
 export const metadata = getMetadata({
-  title: "Zama Template",
-  description: "Built with FHEVM",
+  title: "VEIL — the sealed compliance corridor",
+  description:
+    "Everyone else encrypts the payment and publishes the rules. VEIL seals the rules — the cap, the recipient screening, and the per-sender velocity ceiling are all ciphertext, checked homomorphically on every transfer, readable by no one but a designated compliance officer.",
 });
 
 const DappWrapper = ({ children }: { children: React.ReactNode }) => {
