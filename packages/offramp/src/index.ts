@@ -8,8 +8,11 @@ async function main(): Promise<void> {
   const cfg = loadConfig();
 
   // Hard stop: this off-ramp edge is a SANDBOX demonstration by design (VERIFICATION.md §6e).
-  if (cfg.flutterwave.live) {
-    throw new Error("FLW_LIVE=true refused — the off-ramp edge is sandbox-only by design (VERIFICATION.md §6e).");
+  // Test keys carry `_TEST`; a live secret key is refused outright.
+  if (!cfg.flutterwave.secretKey.includes("_TEST")) {
+    throw new Error(
+      "Refusing a non-test Flutterwave secret key — the off-ramp edge is sandbox-only by design (VERIFICATION.md §6e).",
+    );
   }
 
   const decryptor = new ZamaOfficerDecryptor(cfg);

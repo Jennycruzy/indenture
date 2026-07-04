@@ -236,31 +236,31 @@ canonical fix with the optimizer already on. Semantics unchanged — verified by
 
 ## 6e. Off-ramp provider — sandbox (Phase C2, partial verification; STOP-and-report on funding)
 
-Provider selected: **Flutterwave (v4 Transfers / Direct Transfers API)** — a licensed pan-African PSP with
-an openly documented sandbox. Same off-ramp role as any fiat-payout PSP; nothing in the corridor design (the
-`moved > 0` officer-decrypt trigger below, the server-side-only key, the typed adapter seam) depends on which
-provider fills it. Confirmed from live public docs (2026-07):
+Provider selected: **Flutterwave (v3 Transfers API)** — a licensed pan-African PSP with an openly documented
+sandbox. Same off-ramp role as any fiat-payout PSP; nothing in the corridor design (the `moved > 0`
+officer-decrypt trigger below, the server-side-only key, the typed adapter seam) depends on which provider
+fills it. Corridor country/currency: **Nigeria / NGN, bank transfer**. Verified against the live sandbox
+(2026-07) with a real test key:
 
-- Docs portal: `https://developer.flutterwave.com` — **openly fetchable, NOT Cloudflare-gated**, so the exact
-  endpoint path, auth model, and request/response schema are confirmable directly rather than blocked (contrast
-  an earlier crypto-vault PSP evaluation whose docs 403'd automated fetchers).
-- Auth (**v4**): **OAuth 2.0 client-credentials** — a sandbox **Client ID + Client Secret** are exchanged for a
-  short-lived bearer token at `POST https://idp.flutterwave.com/realms/flutterwave/protocol/openid-connect/token`,
-  and that token authorizes API calls. (v3, still live, uses a static `Authorization: Bearer FLWSECK_TEST-…`
-  secret key.) The secret lives **server-side only** — never in the frontend, never committed.
-- Sandbox base URL: `https://developersandbox-api.flutterwave.com`. Sandbox credentials are issued **instantly
-  on email verification** (no partner-onboarding gate, no business documents upfront) — a practical advantage
-  over a crypto-vault PSP for a sandbox-only demo.
-- Confirmed capability: a test environment mirroring production; single payouts to a beneficiary via **Bank
-  Transfer or Mobile Money** through `POST /direct-transfers` (`action`: instant/defer/schedule + a
-  `payment_instruction` object), funded from a Flutterwave balance (a test wallet in sandbox).
+- Auth (**v3**): a static `Authorization: Bearer <secret key>`. Test mode is keyed by the `FLWSECK_TEST…`
+  secret **itself** — there is no separate sandbox host; base stays `https://api.flutterwave.com/v3`. The
+  secret lives **server-side only** — never in the frontend, never committed. (v4, in public beta, uses OAuth2
+  client-credentials against `developersandbox-api.flutterwave.com`; the adapter is a one-file swap if we move.)
+- **Key validated with a real read-only call:** `GET /v3/transfers` → **HTTP 200** with the `FLWSECK_TEST` key;
+  `GET /v3/banks/NG` → `status: success` with real NG bank codes (e.g. `011` First Bank, `044` Access Bank).
+  Docs portal `https://developer.flutterwave.com` is openly fetchable (not Cloudflare-gated), so the schema was
+  confirmed directly rather than transcribed from memory.
+- Payout path: `POST /v3/transfers` with `{ account_bank, account_number, amount, currency, debit_currency,
+narration, reference }`; `reference` is the idempotency key, bound to `(corridorId, nonce)`. Funds settle from
+  a Flutterwave balance (a test wallet in sandbox); the documented test account `0690000032` / bank `044`
+  simulates a successful transfer.
 
-**Honest status:** the concrete `payment_instruction` sub-schema for a specific NGN bank-transfer payout and a
-runnable sandbox call are **pending a sandbox account** (Client ID + Secret, issued instantly on email
-verification — a light unblock, not a KYC/onboarding gate). Per Phase C2 we **STOP and report** rather than
-fund a float or complete production KYC — the edge is a sandbox demonstration by design. The listener is built
-to a typed provider-adapter seam so wiring verified sandbox credentials is a config step, not a rewrite; the
-key lives server-side only and is never shipped in the frontend or committed.
+**Honest status:** the credential is wired and read-verified; the one remaining step is a **real payout run**,
+which needs a funded sandbox test balance **and** a deployed VEIL Corridor (Phase C) to emit a genuine clear.
+Per Phase C2 we **STOP and report** rather than fund a float or complete production KYC — the edge is a sandbox
+demonstration by design, and `index.ts` hard-refuses any non-`_TEST` (live) key. The listener is built to a
+typed provider-adapter seam so the credential was a config step, not a rewrite; the key lives server-side only
+(`packages/offramp/.env.local`, gitignored) and is never shipped in the frontend or committed.
 
 **Trigger honesty (repo-vs-prompt, Law 1):** the corridor emits `CorridorTransfer` (public ordering only) and
 the engine emits `Settled(id, nonce, receipt, outcomeHandle)` — neither reveals whether a transfer **cleared**

@@ -11,7 +11,7 @@ does **not** fund a float or complete production KYC (see [`VERIFICATION.md §6e
    identity with the ACL grant. Neither event reveals cleared-vs-nullified; that is sealed.
 3. **The gate:** pays out **only when `moved > 0`** — a nullified transfer (any rule failed) disburses nothing.
    The fiat leg is genuinely caused by, and proportional to, a real clear.
-4. Disburses via the **Flutterwave v4 Direct Transfers** adapter (bank / mobile money), keyed idempotently to
+4. Disburses via the **Flutterwave v3 Transfers** adapter (Nigeria / NGN bank transfer), keyed idempotently to
    `(corridorId, nonce)`.
 
 The PSP sits behind a typed `PayoutProvider` seam (`src/providers/types.ts`) — swapping providers is one file.
@@ -20,13 +20,13 @@ The PSP sits behind a typed `PayoutProvider` seam (`src/providers/types.ts`) —
 
 Drop these into `.env.local` (gitignored, server-side only) and the edge is wired:
 
-| Var                                   | What it is                                                                      |
-| ------------------------------------- | ------------------------------------------------------------------------------- |
-| `FLW_CLIENT_ID` / `FLW_CLIENT_SECRET` | Flutterwave **sandbox** OAuth2 credentials (instant on email verification)      |
-| `OFFICER_PRIVATE_KEY`                 | the compliance-officer signer (holds the decrypt grant) — never operator/sender |
-| `CORRIDOR_ADDRESS`                    | the deployed VEIL Corridor (Phase C)                                            |
-| `SEPOLIA_RPC_URL`, `ENGINE_ADDRESS`   | chain access (engine address defaults to the live backbone)                     |
-| `BENEFICIARIES_JSON`                  | on-chain recipient → KYC'd fiat destination map                                 |
+| Var                                 | What it is                                                                      |
+| ----------------------------------- | ------------------------------------------------------------------------------- |
+| `FLW_SECRET_KEY`                    | Flutterwave **sandbox** v3 secret key (`FLWSECK_TEST…`) — the only cred needed  |
+| `OFFICER_PRIVATE_KEY`               | the compliance-officer signer (holds the decrypt grant) — never operator/sender |
+| `CORRIDOR_ADDRESS`                  | the deployed VEIL Corridor (Phase C)                                            |
+| `SEPOLIA_RPC_URL`, `ENGINE_ADDRESS` | chain access (engine address defaults to the live backbone)                     |
+| `BENEFICIARIES_JSON`                | on-chain recipient → KYC'd fiat destination map                                 |
 
 ## Run
 
@@ -39,5 +39,6 @@ pnpm --filter @indenture/offramp start        # or `dev` for watch mode
 
 - `ZamaOfficerDecryptor.decryptMoved` isolates the real `@zama-fhe/sdk` v3 user-decryption; confirm the SDK
   signature against the installed package and enable it (the flow is laid out inline).
-- Confirm the Flutterwave `payment_instruction` sub-schema for your rail on the first sandbox call, then record
-  the provider reference id in [`DEPLOYMENTS.md`](../../DEPLOYMENTS.md) Gate C2.
+- Fund the sandbox test balance and run one real transfer (the `POST /v3/transfers` path is verified — the test
+  key authenticates, `GET /v3/transfers` → 200), then record the provider reference id in
+  [`DEPLOYMENTS.md`](../../DEPLOYMENTS.md) Gate C2.

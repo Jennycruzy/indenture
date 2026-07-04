@@ -108,7 +108,8 @@ Per-mandate consumers (`Leash`, `SealedSettlement`) and all encrypted settlement
 
 - **Phase C (real Sepolia corridor tx hashes)** requires a funded `DEPLOYER_PRIVATE_KEY` + `SEPOLIA_RPC_URL`.
   Per Law 3/8, these outcomes CANNOT be faked; they are produced only against the real coprocessor/KMS/relayer.
-- **Phase C2 (sandbox off-ramp payout)** requires a Flutterwave sandbox account (v4 Client ID + Secret).
+- **Phase C2 (sandbox off-ramp payout)** — Flutterwave v3 sandbox key wired + read-verified (Nigeria/NGN);
+  a real payout run still needs a funded test balance + a deployed Corridor (Phase C).
 - **Phase D (frontend)** definition-of-done is wallet-approved txs against the deployed Corridor.
 
 These three depend on user-provided secrets / network access. The engine + Corridor + full test suite

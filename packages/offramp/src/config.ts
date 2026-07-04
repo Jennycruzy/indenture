@@ -14,12 +14,10 @@ export type Config = {
     privateKey: Hex;
   };
   flutterwave: {
-    clientId: string;
-    clientSecret: string;
-    tokenUrl: string;
+    /** v3 secret key (FLWSECK_TEST… in sandbox). Server-side only; never logged. */
+    secretKey: string;
+    /** API base. v3 test mode is keyed by the FLWSECK_TEST secret — no separate host. */
     baseUrl: string;
-    /** Sandbox-only edge by design; index.ts refuses to start when this is true. */
-    live: boolean;
   };
   beneficiariesJson: string | undefined;
 };
@@ -46,11 +44,8 @@ export function loadConfig(): Config {
     },
     officer: { privateKey: (pk.startsWith("0x") ? pk : `0x${pk}`) as Hex },
     flutterwave: {
-      clientId: req("FLW_CLIENT_ID"),
-      clientSecret: req("FLW_CLIENT_SECRET"),
-      tokenUrl: opt("FLW_TOKEN_URL", "https://idp.flutterwave.com/realms/flutterwave/protocol/openid-connect/token"),
-      baseUrl: opt("FLW_BASE_URL", "https://developersandbox-api.flutterwave.com"),
-      live: opt("FLW_LIVE", "false") === "true",
+      secretKey: req("FLW_SECRET_KEY"),
+      baseUrl: opt("FLW_BASE_URL", "https://api.flutterwave.com/v3"),
     },
     beneficiariesJson: process.env.BENEFICIARIES_JSON,
   };
