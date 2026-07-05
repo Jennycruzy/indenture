@@ -31,7 +31,10 @@ export class FlutterwaveProvider implements PayoutProvider {
 
     const res = await fetch(`${this.cfg.baseUrl}/transfers`, {
       method: "POST",
-      headers: { authorization: `Bearer ${this.cfg.secretKey}`, "content-type": "application/json" },
+      headers: {
+        authorization: `Bearer ${this.cfg.secretKey}`,
+        "content-type": "application/json",
+      },
       body: JSON.stringify(payload),
     });
     const json = (await res.json().catch(() => ({}))) as {
@@ -40,7 +43,9 @@ export class FlutterwaveProvider implements PayoutProvider {
       data?: { id?: number; status?: string; reference?: string };
     };
     if (!res.ok || json.status !== "success") {
-      throw new Error(`Flutterwave v3 transfer failed: ${res.status} ${json.message ?? JSON.stringify(json)}`);
+      throw new Error(
+        `Flutterwave v3 transfer failed: ${res.status} ${json.message ?? JSON.stringify(json)}`,
+      );
     }
     return {
       providerId: json.data?.id != null ? String(json.data.id) : "unknown",

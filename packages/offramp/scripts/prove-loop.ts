@@ -44,13 +44,15 @@ async function main() {
     recipient,
   };
 
-  console.log(`[prove-loop] settle → officer-decrypt moved=${moved} → gate → ${provider.name} payout…`);
+  console.log(
+    `[prove-loop] settle → officer-decrypt moved=${moved} → gate → ${provider.name} payout…`,
+  );
   const out = await processSettlement(deps, settlement);
   console.log("[prove-loop] outcome:", JSON.stringify(out, null, 2));
   if (out.kind !== "paid") process.exitCode = 1;
 }
 
-main().catch(err => {
+main().catch((err) => {
   console.error("[prove-loop] error:", err instanceof Error ? err.message : err);
   process.exit(1);
 });

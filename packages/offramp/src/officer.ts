@@ -69,7 +69,9 @@ export class ZamaOfficerDecryptor implements OfficerDecryptor {
     const values = await sdk.userDecrypt([{ handle, contractAddress }]);
     const moved = values[handle];
     if (typeof moved !== "bigint") {
-      throw new Error(`officer decrypt returned a non-numeric value for ${handle}: ${String(moved)}`);
+      throw new Error(
+        `officer decrypt returned a non-numeric value for ${handle}: ${String(moved)}`,
+      );
     }
     return moved;
   }

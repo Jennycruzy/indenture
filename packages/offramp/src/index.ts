@@ -22,7 +22,7 @@ async function main(): Promise<void> {
   await runListener({ cfg, decryptor, provider, beneficiaries });
 }
 
-main().catch(err => {
+main().catch((err) => {
   console.error("[offramp] fatal:", err);
   process.exit(1);
 });

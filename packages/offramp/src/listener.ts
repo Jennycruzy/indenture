@@ -39,7 +39,10 @@ export type PayoutOutcome =
  * listener and any integration driver run the SAME code. Officer-decrypts the sealed
  * outcome and fires the payout ONLY when `moved > 0` (VERIFICATION.md §6e).
  */
-export async function processSettlement(deps: ListenerDeps, ev: Settlement): Promise<PayoutOutcome> {
+export async function processSettlement(
+  deps: ListenerDeps,
+  ev: Settlement,
+): Promise<PayoutOutcome> {
   const { cfg, decryptor, provider, beneficiaries } = deps;
 
   // 1. Officer-decrypt the sealed outcome. moved ∈ {0, amount}.
@@ -62,7 +65,13 @@ export async function processSettlement(deps: ListenerDeps, ev: Settlement): Pro
     beneficiary,
     narration: `VEIL corridor clear nonce ${ev.nonce}`,
   });
-  return { kind: "paid", amount, currency: beneficiary.currency, providerId: result.providerId, status: result.status };
+  return {
+    kind: "paid",
+    amount,
+    currency: beneficiary.currency,
+    providerId: result.providerId,
+    status: result.status,
+  };
 }
 
 /**
@@ -82,7 +91,7 @@ export async function runListener(deps: ListenerDeps): Promise<void> {
   client.watchEvent({
     address: cfg.chain.corridorAddress,
     event: CORRIDOR_TRANSFER,
-    onLogs: logs => {
+    onLogs: (logs) => {
       for (const log of logs) {
         const { sender, recipient, nonce } = log.args as {
           sender: Address;
@@ -97,12 +106,14 @@ export async function runListener(deps: ListenerDeps): Promise<void> {
   client.watchEvent({
     address: cfg.chain.engineAddress,
     event: SETTLED,
-    onLogs: async logs => {
+    onLogs: async (logs) => {
       for (const log of logs) {
         const { nonce, outcomeHandle } = log.args as { nonce: bigint; outcomeHandle: Hex };
         const parties = partiesByNonce.get(nonce.toString());
         if (!parties) {
-          console.warn(`[offramp] nonce=${nonce} settled but no CorridorTransfer seen yet — deferring`);
+          console.warn(
+            `[offramp] nonce=${nonce} settled but no CorridorTransfer seen yet — deferring`,
+          );
           continue;
         }
         try {
@@ -129,7 +140,9 @@ function logOutcome(nonce: bigint, provider: string, out: PayoutOutcome): void {
     case "nullified":
       return console.log(`[offramp] nonce=${nonce} nullified (moved=0) — no payout`);
     case "no-beneficiary":
-      return console.warn(`[offramp] nonce=${nonce} no fiat beneficiary mapped for ${out.recipient} — skipping`);
+      return console.warn(
+        `[offramp] nonce=${nonce} no fiat beneficiary mapped for ${out.recipient} — skipping`,
+      );
   }
 }
 
