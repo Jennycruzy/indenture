@@ -150,7 +150,7 @@ Deployment block: `11,209,245`.
 
 Transaction links and gas usage are recorded in [DEPLOYMENTS.md](DEPLOYMENTS.md).
 
-Source verification on Etherscan was skipped during this deployment because `ETHERSCAN_API_KEY` was not set.
+Source verification on Etherscan is complete for the `Veil` engine, `DemoConfidentialToken`, and `ConfidentialFeed`.
 
 ## What Is Not Done Yet
 
@@ -158,7 +158,6 @@ VEIL is not production software.
 
 Still pending:
 
-- Etherscan source verification for the fresh Sepolia deployment
 - a deployed Sepolia `Corridor` for the full operator/sender/officer flow
 - real Sepolia evidence for compliant transfer, nullified transfer, velocity breach, and officer decrypt
 - production security audit

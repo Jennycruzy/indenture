@@ -4,7 +4,7 @@
 
 ## Sepolia
 
-Status: VEIL backbone redeployed on Sepolia. Etherscan source verification was skipped because `ETHERSCAN_API_KEY` was not set during deployment.
+Status: VEIL backbone redeployed on Sepolia. Etherscan source verification is complete for the `Veil` engine, `DemoConfidentialToken`, and `ConfidentialFeed`.
 
 | Contract                | Address                                                                                                                         | Tx                                                                                                                                                                         |      Block |  Gas used |
 | ----------------------- | ------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------: | --------: |
