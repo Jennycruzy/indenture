@@ -1,8 +1,8 @@
 "use client";
 
 import type { Hex } from "viem";
-import { CipherGlyphs } from "~~/components/veil/CipherGlyphs";
-import type { GatePhase } from "~~/hooks/veil/useVeilActions";
+import { CipherGlyphs } from "~~/components/cloistra/CipherGlyphs";
+import type { GatePhase } from "~~/hooks/cloistra/useCloistraActions";
 
 export type GateVerdict = "cleared" | "nullified";
 

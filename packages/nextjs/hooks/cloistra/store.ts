@@ -5,7 +5,7 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
 /**
- * A VEIL corridor is deployed per-mandate. We persist ONLY the active corridor's
+ * A CLOISTRA corridor is deployed per-mandate. We persist ONLY the active corridor's
  * address (+ an optional label) locally; every role and policy fact — operator,
  * compliance officer, engine, mandate id, window, nonce, sealed handles — is read
  * from chain off that address. Nothing about the sealed policy is cached client-side.
@@ -15,7 +15,7 @@ export type ActiveCorridor = {
   label?: string;
 };
 
-type VeilState = {
+type CloistraState = {
   active?: ActiveCorridor;
   /** The scout's-eye toggle — render the corridor as an outside on-chain observer sees it. */
   scoutMode: boolean;
@@ -24,7 +24,7 @@ type VeilState = {
   setScout: (v: boolean) => void;
 };
 
-export const useVeilStore = create<VeilState>()(
+export const useCloistraStore = create<CloistraState>()(
   persist(
     set => ({
       active: undefined,
@@ -33,7 +33,7 @@ export const useVeilStore = create<VeilState>()(
       toggleScout: () => set(s => ({ scoutMode: !s.scoutMode })),
       setScout: v => set({ scoutMode: v }),
     }),
-    { name: "veil-active-corridor" },
+    { name: "cloistra-active-corridor" },
   ),
 );
 

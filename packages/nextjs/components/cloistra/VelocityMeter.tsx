@@ -1,7 +1,7 @@
 "use client";
 
 import type { Hex } from "viem";
-import { CipherGlyphs } from "~~/components/veil/CipherGlyphs";
+import { CipherGlyphs } from "~~/components/cloistra/CipherGlyphs";
 
 /**
  * The per-sender velocity meter. Even the sender sees only sealed glyphs — they know a

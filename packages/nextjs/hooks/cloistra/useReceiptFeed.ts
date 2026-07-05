@@ -4,7 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { parseAbiItem } from "viem";
 import type { Address, Hex } from "viem";
 import { usePublicClient } from "wagmi";
-import { ENGINE_DEPLOY_BLOCK } from "~~/contracts/veil/addresses";
+import { ENGINE_DEPLOY_BLOCK } from "~~/contracts/cloistra/addresses";
 
 const CORRIDOR_TRANSFER_EVENT = parseAbiItem(
   "event CorridorTransfer(address indexed sender, address indexed recipient, uint256 indexed nonce)",
@@ -37,7 +37,7 @@ export function useReceiptFeed(corridor?: Address, engine?: Address, mandateId?:
   const client = usePublicClient();
 
   return useQuery<CorridorReceipt[]>({
-    queryKey: ["veil-receipts", corridor, engine, mandateId],
+    queryKey: ["cloistra-receipts", corridor, engine, mandateId],
     enabled: Boolean(client && corridor && engine && mandateId),
     refetchInterval: 12_000,
     queryFn: async () => {

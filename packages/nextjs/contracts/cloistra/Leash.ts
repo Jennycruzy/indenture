@@ -8,7 +8,7 @@ export const leashAbi = [
       {
         name: "_engine",
         type: "address",
-        internalType: "contract Veil",
+        internalType: "contract Cloistra",
       },
       {
         name: "_mandateId",
@@ -57,7 +57,7 @@ export const leashAbi = [
       {
         name: "",
         type: "address",
-        internalType: "contract Veil",
+        internalType: "contract Cloistra",
       },
     ],
     stateMutability: "view",

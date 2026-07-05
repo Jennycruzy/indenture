@@ -3,10 +3,10 @@
 import { useMemo } from "react";
 import type { Address, Hex } from "viem";
 import { useAccount, useChainId, useReadContract, useReadContracts } from "wagmi";
-import { corridorAbi } from "~~/contracts/veil/Corridor";
-import { veilAbi } from "~~/contracts/veil/Veil";
-import { corridorAddressFor } from "~~/contracts/veil/addresses";
-import { useVeilStore } from "~~/hooks/veil/store";
+import { cloistraAbi } from "~~/contracts/cloistra/Cloistra";
+import { corridorAbi } from "~~/contracts/cloistra/Corridor";
+import { corridorAddressFor } from "~~/contracts/cloistra/addresses";
+import { useCloistraStore } from "~~/hooks/cloistra/store";
 
 export type CorridorRole = "operator" | "officer" | "sender" | "disconnected";
 
@@ -31,7 +31,7 @@ export type CorridorInfo = {
 };
 
 /**
- * Resolves the active VEIL corridor entirely from chain. The only thing kept
+ * Resolves the active CLOISTRA corridor entirely from chain. The only thing kept
  * locally is the corridor address; operator / compliance-officer / engine /
  * mandate id / window / nonce are all read on-chain, so no sealed-policy fact
  * is ever cached client-side.
@@ -39,7 +39,7 @@ export type CorridorInfo = {
 export function useCorridor(): CorridorInfo {
   const chainId = useChainId();
   const { address: account } = useAccount();
-  const storeAddress = useVeilStore(s => s.active?.address);
+  const storeAddress = useCloistraStore(s => s.active?.address);
 
   const address = (storeAddress ?? corridorAddressFor(chainId)) as Address | undefined;
   const configured = Boolean(address);
@@ -71,7 +71,7 @@ export function useCorridor(): CorridorInfo {
   // The mandate nonce lives on the engine, keyed by mandate id — a dependent read.
   const nonceRead = useReadContract({
     address: engine,
-    abi: veilAbi,
+    abi: cloistraAbi,
     functionName: "mandateNonce",
     args: mandateId ? [mandateId] : undefined,
     query: { enabled: Boolean(engine && mandateId) },

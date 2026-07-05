@@ -1,14 +1,14 @@
-# VEIL / VEIL Contracts
+# CLOISTRA / CLOISTRA Contracts
 
-This package contains the Solidity side of VEIL. `Veil.sol` is the sealed-mandate engine; `orders/Corridor.sol`
-is the VEIL product contract that turns the engine into a sealed compliance corridor.
+This package contains the Solidity side of CLOISTRA. `Cloistra.sol` is the sealed-mandate engine; `orders/Corridor.sol`
+is the CLOISTRA product contract that turns the engine into a sealed compliance corridor.
 
 ## Contract Map
 
 ```text
 src/
-├── Veil.sol                     # sealed-mandate engine
-├── orders/Corridor.sol               # VEIL corridor + sealed velocity accumulator
+├── Cloistra.sol                     # sealed-mandate engine
+├── orders/Corridor.sol               # CLOISTRA corridor + sealed velocity accumulator
 ├── orders/Leash.sol                  # Order I composability proof
 ├── orders/SealedSettlement.sol       # Order II cross-contract proof
 ├── orders/ConfidentialFeed.sol       # independent sealed feed for Order II
@@ -30,8 +30,8 @@ those transaction hashes in `../../DEPLOYMENTS.md`.
 From the repo root:
 
 ```bash
-scripts/deploy-veil-sepolia.sh
+scripts/deploy-cloistra-sepolia.sh
 ```
 
-That deploys the shared VEIL backbone for VEIL: engine, demo confidential token, and `ConfidentialFeed`.
-The VEIL `Corridor` is deployed per mandate after the operator encrypts the policy inputs.
+That deploys the shared CLOISTRA backbone for CLOISTRA: engine, demo confidential token, and `ConfidentialFeed`.
+The CLOISTRA `Corridor` is deployed per mandate after the operator encrypts the policy inputs.

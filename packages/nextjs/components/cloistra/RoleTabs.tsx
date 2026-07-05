@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useCorridor } from "~~/hooks/veil/useCorridor";
+import { useCorridor } from "~~/hooks/cloistra/useCorridor";
 
 const TABS = [
   { href: "/", label: "Overview", role: null },

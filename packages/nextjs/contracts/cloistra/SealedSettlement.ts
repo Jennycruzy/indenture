@@ -8,7 +8,7 @@ export const sealedSettlementAbi = [
       {
         name: "_engine",
         type: "address",
-        internalType: "contract Veil",
+        internalType: "contract Cloistra",
       },
       {
         name: "_mandateId",
@@ -103,7 +103,7 @@ export const sealedSettlementAbi = [
       {
         name: "",
         type: "address",
-        internalType: "contract Veil",
+        internalType: "contract Cloistra",
       },
     ],
     stateMutability: "view",

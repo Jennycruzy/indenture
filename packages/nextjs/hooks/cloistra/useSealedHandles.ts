@@ -2,9 +2,9 @@
 
 import type { Address, Hex } from "viem";
 import { useReadContract, useReadContracts } from "wagmi";
-import { corridorAbi } from "~~/contracts/veil/Corridor";
-import { veilAbi } from "~~/contracts/veil/Veil";
-import { useCorridor } from "~~/hooks/veil/useCorridor";
+import { cloistraAbi } from "~~/contracts/cloistra/Cloistra";
+import { corridorAbi } from "~~/contracts/cloistra/Corridor";
+import { useCorridor } from "~~/hooks/cloistra/useCorridor";
 
 export type SealedHandles = {
   /** Rule 3 — the sealed velocity ceiling (handle lives under the corridor's ACL). */
@@ -46,7 +46,7 @@ export function useSealedHandles(sender?: Address): SealedHandles {
     allowFailure: true,
     contracts:
       engine && mandateId
-        ? [{ address: engine, abi: veilAbi, functionName: "sealedLimits", args: [mandateId] } as const]
+        ? [{ address: engine, abi: cloistraAbi, functionName: "sealedLimits", args: [mandateId] } as const]
         : [],
     query: { enabled: Boolean(engine && mandateId) },
   });

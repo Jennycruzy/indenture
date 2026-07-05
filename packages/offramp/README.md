@@ -1,4 +1,4 @@
-# @veil/offramp — VEIL sandbox off-ramp listener (Phase C2)
+# @cloistra/offramp — CLOISTRA sandbox off-ramp listener (Phase C2)
 
 Fires a **real sandbox fiat payout** on a **genuine on-chain corridor clear**. Sandbox-only by design — it
 does **not** fund a float or complete production KYC (see [`VERIFICATION.md §6e`](../../VERIFICATION.md)).
@@ -24,15 +24,15 @@ Drop these into `.env.local` (gitignored, server-side only) and the edge is wire
 | ----------------------------------- | ------------------------------------------------------------------------------- |
 | `FLW_SECRET_KEY`                    | Flutterwave **sandbox** v3 secret key (`FLWSECK_TEST…`) — the only cred needed  |
 | `OFFICER_PRIVATE_KEY`               | the compliance-officer signer (holds the decrypt grant) — never operator/sender |
-| `CORRIDOR_ADDRESS`                  | the deployed VEIL Corridor (Phase C)                                            |
-| `SEPOLIA_RPC_URL`, `ENGINE_ADDRESS` | chain access (`ENGINE_ADDRESS` defaults to the live Sepolia backbone)           |
+| `CORRIDOR_ADDRESS`                  | the deployed CLOISTRA Corridor (Phase C)                                        |
+| `SEPOLIA_RPC_URL`, `ENGINE_ADDRESS` | chain access for the freshly deployed CLOISTRA engine                           |
 | `BENEFICIARIES_JSON`                | on-chain recipient → KYC'd fiat destination map                                 |
 
 ## Run
 
 ```bash
 cp packages/offramp/.env.example packages/offramp/.env.local   # fill in the values above
-pnpm --filter @veil/offramp start        # or `dev` for watch mode
+pnpm --filter @cloistra/offramp start        # or `dev` for watch mode
 ```
 
 ## Officer decryption

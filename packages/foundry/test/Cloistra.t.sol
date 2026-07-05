@@ -4,7 +4,7 @@ pragma solidity ^0.8.27;
 import {FhevmTest} from "forge-fhevm/FhevmTest.sol";
 import {Vm} from "forge-std/Vm.sol";
 import {FHE, euint64, ebool, externalEuint64, externalEbool} from "@fhevm/solidity/lib/FHE.sol";
-import {Veil} from "../src/Veil.sol";
+import {Cloistra} from "../src/Cloistra.sol";
 import {Leash} from "../src/orders/Leash.sol";
 import {DemoConfidentialToken} from "../src/mocks/DemoConfidentialToken.sol";
 import {IERC7984} from "@openzeppelin/confidential-contracts/interfaces/IERC7984.sol";
@@ -14,8 +14,8 @@ import {IERC7984} from "@openzeppelin/confidential-contracts/interfaces/IERC7984
 ///      default-deny payee, nonce increment + replay revert, receipt-chain linkage, the
 ///      leak-audit, and the blind-agent proof. Runs on Zama's cleartext harness (fast
 ///      iteration); the definition of done is real Sepolia tx hashes (see README/VERIFICATION).
-contract VeilTest is FhevmTest {
-    Veil internal engine;
+contract CloistraTest is FhevmTest {
+    Cloistra internal engine;
     DemoConfidentialToken internal token;
 
     uint256 internal constant PRINCIPAL_PK = 0xA11CE;
@@ -30,8 +30,8 @@ contract VeilTest is FhevmTest {
         disableHCUDepthLimit(); // the sealed predicate is a deep homomorphic circuit
         principal = vm.addr(PRINCIPAL_PK);
         agent = vm.addr(AGENT_PK);
-        engine = new Veil();
-        token = new DemoConfidentialToken("Veil USD", "vUSD", "");
+        engine = new Cloistra();
+        token = new DemoConfidentialToken("Cloistra USD", "clUSD", "");
     }
 
     // ── helpers ────────────────────────────────────────────────────────────────
@@ -157,7 +157,7 @@ contract VeilTest is FhevmTest {
 
         (externalEuint64 a, bytes memory p) = encryptUint64(40, agent, address(leash));
         vm.prank(agent);
-        vm.expectRevert(Veil.StaleNonce.selector);
+        vm.expectRevert(Cloistra.StaleNonce.selector);
         leash.execute(0, BOB, a, p); // stale nonce 0 -> revert (on-chain, not a frontend guard)
     }
 

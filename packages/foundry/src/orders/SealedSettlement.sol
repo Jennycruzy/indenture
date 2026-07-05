@@ -3,11 +3,11 @@ pragma solidity ^0.8.27;
 
 import {ZamaEthereumConfig} from "@fhevm/solidity/config/ZamaConfig.sol";
 import {FHE, euint64, ebool, externalEuint64} from "@fhevm/solidity/lib/FHE.sol";
-import {Veil} from "../Veil.sol";
+import {Cloistra} from "../Cloistra.sol";
 import {ConfidentialFeed} from "./ConfidentialFeed.sol";
 
 /// @title SealedSettlement — Order II: the cross-contract composability proof.
-/// @author VEIL (clean-room; unaudited demonstration)
+/// @author CLOISTRA (clean-room; unaudited demonstration)
 /// @notice A parametric option/OTC hedge over the SAME sealed-mandate engine, adding ONE new
 ///         sealed predicate: payout releases iff an independent feed's sealed value ≥ the writer's
 ///         sealed strike. This proves the engine is a composable primitive, not a single app:
@@ -21,7 +21,7 @@ import {ConfidentialFeed} from "./ConfidentialFeed.sol";
 ///         the writer (the mandate principal) for audit and to NO ONE else. Real FHE runs only on
 ///         Sepolia; local tests use Zama's cleartext harness.
 contract SealedSettlement is ZamaEthereumConfig {
-    Veil public immutable engine;
+    Cloistra public immutable engine;
     bytes32 public immutable mandateId;
     ConfidentialFeed public immutable feed;
     /// @notice The option holder; the payout payee. Must be allowlisted on the mandate by the writer.
@@ -39,7 +39,7 @@ contract SealedSettlement is ZamaEthereumConfig {
     error NotArmed();
     error FeedUnset();
 
-    constructor(Veil _engine, bytes32 _mandateId, ConfidentialFeed _feed, address _buyer) {
+    constructor(Cloistra _engine, bytes32 _mandateId, ConfidentialFeed _feed, address _buyer) {
         engine = _engine;
         mandateId = _mandateId;
         feed = _feed;

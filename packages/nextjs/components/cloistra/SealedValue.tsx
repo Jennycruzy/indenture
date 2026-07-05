@@ -1,7 +1,7 @@
 "use client";
 
 import type { Hex } from "viem";
-import { CipherGlyphs } from "~~/components/veil/CipherGlyphs";
+import { CipherGlyphs } from "~~/components/cloistra/CipherGlyphs";
 
 function formatResolved(v: bigint | boolean | undefined, unit?: string): string {
   if (typeof v === "boolean") return v ? "ALLOWED" : "DENIED";

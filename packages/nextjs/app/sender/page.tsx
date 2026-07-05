@@ -2,15 +2,15 @@
 
 import { useState } from "react";
 import { useAccount } from "wagmi";
-import { ConnectGate } from "~~/components/veil/ConnectGate";
-import { NotConfigured } from "~~/components/veil/NotConfigured";
-import { ReceiptRibbon } from "~~/components/veil/ReceiptRibbon";
-import { SealedGate } from "~~/components/veil/SealedGate";
-import { VeilShell } from "~~/components/veil/VeilShell";
-import { VelocityMeter } from "~~/components/veil/VelocityMeter";
-import { useCorridor } from "~~/hooks/veil/useCorridor";
-import { useSealedHandles } from "~~/hooks/veil/useSealedHandles";
-import { useSenderTransfer } from "~~/hooks/veil/useVeilActions";
+import { CloistraShell } from "~~/components/cloistra/CloistraShell";
+import { ConnectGate } from "~~/components/cloistra/ConnectGate";
+import { NotConfigured } from "~~/components/cloistra/NotConfigured";
+import { ReceiptRibbon } from "~~/components/cloistra/ReceiptRibbon";
+import { SealedGate } from "~~/components/cloistra/SealedGate";
+import { VelocityMeter } from "~~/components/cloistra/VelocityMeter";
+import { useSenderTransfer } from "~~/hooks/cloistra/useCloistraActions";
+import { useCorridor } from "~~/hooks/cloistra/useCorridor";
+import { useSealedHandles } from "~~/hooks/cloistra/useSealedHandles";
 
 const txLink = (h?: string) => (h ? `https://sepolia.etherscan.io/tx/${h}` : undefined);
 
@@ -27,7 +27,7 @@ export default function SenderPage() {
   const recipientValid = /^0x[0-9a-fA-F]{40}$/.test(recipient);
 
   return (
-    <VeilShell>
+    <CloistraShell>
       <ConnectGate>
         {!configured ? (
           <NotConfigured />
@@ -54,7 +54,7 @@ export default function SenderPage() {
                   recipient
                 </label>
                 <input
-                  className="veil-input"
+                  className="cloistra-input"
                   placeholder="0x… beneficiary"
                   value={recipient}
                   onChange={e => setRecipient(e.target.value)}
@@ -67,7 +67,7 @@ export default function SenderPage() {
                   amount (sealed)
                 </label>
                 <input
-                  className="veil-input"
+                  className="cloistra-input"
                   placeholder="amount — encrypted before it leaves your browser"
                   value={amount}
                   onChange={e => setAmount(e.target.value)}
@@ -134,6 +134,6 @@ export default function SenderPage() {
           </>
         )}
       </ConnectGate>
-    </VeilShell>
+    </CloistraShell>
   );
 }

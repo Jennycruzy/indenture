@@ -5,10 +5,10 @@ import { useEncrypt } from "@zama-fhe/react-sdk";
 import { bytesToHex } from "viem";
 import type { Address, Hex } from "viem";
 import { useAccount, useReadContract, useWriteContract } from "wagmi";
-import { corridorAbi } from "~~/contracts/veil/Corridor";
-import { demoConfidentialTokenAbi } from "~~/contracts/veil/DemoConfidentialToken";
-import { veilAbi } from "~~/contracts/veil/Veil";
-import { useCorridor } from "~~/hooks/veil/useCorridor";
+import { cloistraAbi } from "~~/contracts/cloistra/Cloistra";
+import { corridorAbi } from "~~/contracts/cloistra/Corridor";
+import { demoConfidentialTokenAbi } from "~~/contracts/cloistra/DemoConfidentialToken";
+import { useCorridor } from "~~/hooks/cloistra/useCorridor";
 
 // FHE settlement is compute-heavy; cap under Sepolia's per-tx block gas limit (16,777,216).
 const FHE_GAS = 15_000_000n;
@@ -145,7 +145,7 @@ export function useOperatorActions() {
         });
         const tx = await writeContractAsync({
           address: engine,
-          abi: veilAbi,
+          abi: cloistraAbi,
           functionName: "setPayeeAllowed",
           args: [mandateId, recipient, bytesToHex(enc.handles[0]!), bytesToHex(enc.inputProof)],
           gas: FHE_GAS,
@@ -156,7 +156,7 @@ export function useOperatorActions() {
     [wrap, engine, mandateId, account, encrypt, writeContractAsync],
   );
 
-  /** Fund the corridor's sealed custody: mint demo vUSD (cleartext) to the operator, authorise the
+  /** Fund the corridor's sealed custody: mint demo clUSD (cleartext) to the operator, authorise the
    *  engine as operator on the token, then pull an ENCRYPTED amount into custody via `fund`. */
   const fundCustody = useCallback(
     (amount: bigint) =>
@@ -182,7 +182,7 @@ export function useOperatorActions() {
         });
         const tx = await writeContractAsync({
           address: engine,
-          abi: veilAbi,
+          abi: cloistraAbi,
           functionName: "fund",
           args: [mandateId, bytesToHex(enc.handles[0]!), bytesToHex(enc.inputProof)],
           gas: FHE_GAS,
@@ -206,7 +206,7 @@ function useCorridorToken() {
 function useReadMandateToken(engine?: Address, mandateId?: Hex): Address | undefined {
   const read = useReadContract({
     address: engine,
-    abi: veilAbi,
+    abi: cloistraAbi,
     functionName: "mandateToken",
     args: mandateId ? [mandateId] : undefined,
     query: { enabled: Boolean(engine && mandateId) },

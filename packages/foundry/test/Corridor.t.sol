@@ -4,12 +4,12 @@ pragma solidity ^0.8.27;
 import {FhevmTest} from "forge-fhevm/FhevmTest.sol";
 import {Vm} from "forge-std/Vm.sol";
 import {FHE, euint64, ebool, externalEuint64, externalEbool} from "@fhevm/solidity/lib/FHE.sol";
-import {Veil} from "../src/Veil.sol";
+import {Cloistra} from "../src/Cloistra.sol";
 import {Corridor} from "../src/orders/Corridor.sol";
 import {DemoConfidentialToken} from "../src/mocks/DemoConfidentialToken.sol";
 import {IERC7984} from "@openzeppelin/confidential-contracts/interfaces/IERC7984.sol";
 
-/// @title VEIL Corridor test suite — the sealed compliance rulebook, incl. the net-new encrypted
+/// @title CLOISTRA Corridor test suite — the sealed compliance rulebook, incl. the net-new encrypted
 ///        velocity accumulator (Rule 3) and the compliance-officer disclosure model.
 /// @dev Covers Evidence Gate B: compliant transfer clears; cap breach / screened-out recipient /
 ///      velocity breach all nullify to zero; window rollover resets the encrypted running total and a
@@ -19,7 +19,7 @@ import {IERC7984} from "@openzeppelin/confidential-contracts/interfaces/IERC7984
 ///      event leaks any sealed value or the pass/fail bit. Runs on Zama's cleartext harness (fast
 ///      iteration); the definition of done is real Sepolia tx hashes (see DEPLOYMENTS.md / README).
 contract CorridorTest is FhevmTest {
-    Veil internal engine;
+    Cloistra internal engine;
     DemoConfidentialToken internal token;
 
     uint256 internal constant OPERATOR_PK = 0xC0FFEE; // the corridor operator (== mandate principal)
@@ -42,8 +42,8 @@ contract CorridorTest is FhevmTest {
         officer = vm.addr(OFFICER_PK);
         sender = vm.addr(SENDER_PK);
         sender2 = vm.addr(SENDER2_PK);
-        engine = new Veil();
-        token = new DemoConfidentialToken("VEIL USD", "vUSD", "");
+        engine = new Cloistra();
+        token = new DemoConfidentialToken("CLOISTRA USD", "clUSD", "");
     }
 
     // ── helpers ────────────────────────────────────────────────────────────────
@@ -96,7 +96,7 @@ contract CorridorTest is FhevmTest {
 
     // ── happy path: a compliant transfer clears ──────────────────────────────────
     function test_compliantTransfer_clears() public {
-        bytes32 id = keccak256("veil-ok");
+        bytes32 id = keccak256("cloistra-ok");
         Corridor c = _corridor(id, 100, 100000, 0, 1000, 500); // ceiling 500
         _transfer(c, 0, sender, RECIPIENT, 80);
 
@@ -109,7 +109,7 @@ contract CorridorTest is FhevmTest {
 
     // ── Rule 1: sealed per-transfer cap breach → nullified ───────────────────────
     function test_capBreach_nullified() public {
-        bytes32 id = keccak256("veil-cap");
+        bytes32 id = keccak256("cloistra-cap");
         Corridor c = _corridor(id, 50, 100000, 0, 1000, 100000); // cap 50, ceiling effectively infinite
         _transfer(c, 0, sender, RECIPIENT, 80); // 80 > cap 50
 
@@ -123,7 +123,7 @@ contract CorridorTest is FhevmTest {
 
     // ── Rule 2: screened-out recipient → nullified ───────────────────────────────
     function test_screenedOutRecipient_nullified() public {
-        bytes32 id = keccak256("veil-screen");
+        bytes32 id = keccak256("cloistra-screen");
         Corridor c = _corridor(id, 1000, 100000, 0, 1000, 100000);
         _transfer(c, 0, sender, MALLORY, 50); // MALLORY was never screened in → default DENY
 
@@ -134,7 +134,7 @@ contract CorridorTest is FhevmTest {
 
     // ── Rule 3: sealed velocity breach ACROSS transfers → nullified ──────────────
     function test_velocityBreach_acrossTransfers_nullified() public {
-        bytes32 id = keccak256("veil-velocity");
+        bytes32 id = keccak256("cloistra-velocity");
         Corridor c = _corridor(id, 1000, 100000, 0, 10000, 100); // ceiling 100; cap/total generous
         _transfer(c, 0, sender, RECIPIENT, 60); // 0+60 <= 100 → clears
         assertEq(decrypt(c.sealedSpent(sender)), 60, "first transfer within ceiling");
@@ -149,7 +149,7 @@ contract CorridorTest is FhevmTest {
 
     // ── Rule 3: at-the-ceiling boundary clears (<=) ──────────────────────────────
     function test_velocityAtCeiling_boundaryClears() public {
-        bytes32 id = keccak256("veil-boundary");
+        bytes32 id = keccak256("cloistra-boundary");
         Corridor c = _corridor(id, 1000, 100000, 0, 10000, 100);
         _transfer(c, 0, sender, RECIPIENT, 100); // 0+100 <= 100 → clears exactly at the ceiling
         assertEq(_bal(RECIPIENT), 100, "exactly-at-ceiling transfer clears");
@@ -159,7 +159,7 @@ contract CorridorTest is FhevmTest {
 
     // ── Rule 3: PUBLIC window rollover resets the ENCRYPTED total; post-reset transfer succeeds ──
     function test_windowRollover_resetsEncryptedTotal() public {
-        bytes32 id = keccak256("veil-rollover");
+        bytes32 id = keccak256("cloistra-rollover");
         Corridor c = _corridor(id, 1000, 100000, 0, 10000, 100); // ceiling 100
         _transfer(c, 0, sender, RECIPIENT, 60); // fill 60 of the window
         assertEq(decrypt(c.sealedSpent(sender)), 60, "pre-rollover total");
@@ -179,7 +179,7 @@ contract CorridorTest is FhevmTest {
     // ── combined: within velocity but over the sealed cap → STILL nullified ──────
     // Proves Rule 3 is ANDed with Rules 1+2, not swapped for them.
     function test_withinVelocity_butOverCap_nullified() public {
-        bytes32 id = keccak256("veil-combined");
+        bytes32 id = keccak256("cloistra-combined");
         Corridor c = _corridor(id, 50, 100000, 0, 1000, 100000); // cap 50, ceiling huge
         _transfer(c, 0, sender, RECIPIENT, 80); // within velocity (80 <= huge) but 80 > cap 50
 
@@ -189,7 +189,7 @@ contract CorridorTest is FhevmTest {
 
     // ── per-sender independence: one sender's exhausted window does not touch another's ──
     function test_perSenderAccumulators_areIndependent() public {
-        bytes32 id = keccak256("veil-multi");
+        bytes32 id = keccak256("cloistra-multi");
         Corridor c = _corridor(id, 1000, 100000, 0, 10000, 100); // ceiling 100 per sender
         _transfer(c, 0, sender, RECIPIENT, 100); // sender fills its window
         _transfer(c, 1, sender, RECIPIENT, 1); // sender over ceiling → nullified
@@ -202,19 +202,19 @@ contract CorridorTest is FhevmTest {
 
     // ── replay: a stale nonce reverts on-chain (not a frontend guard) ────────────
     function test_replay_revertsOnStaleNonce() public {
-        bytes32 id = keccak256("veil-replay");
+        bytes32 id = keccak256("cloistra-replay");
         Corridor c = _corridor(id, 1000, 100000, 0, 10000, 100000);
         _transfer(c, 0, sender, RECIPIENT, 40); // nonce → 1
 
         (externalEuint64 a, bytes memory p) = encryptUint64(40, sender, address(c));
         vm.prank(sender);
-        vm.expectRevert(Veil.StaleNonce.selector);
+        vm.expectRevert(Cloistra.StaleNonce.selector);
         c.transfer(0, RECIPIENT, a, p); // stale nonce 0 reverts on-chain
     }
 
     // ── forgery: a hand-crafted ciphertext without a valid proof dies at the boundary ──
     function test_forgedInput_revertsAtInputBoundary() public {
-        bytes32 id = keccak256("veil-forge");
+        bytes32 id = keccak256("cloistra-forge");
         Corridor c = _corridor(id, 1000, 100000, 0, 10000, 100000);
 
         externalEuint64 forged = externalEuint64.wrap(bytes32(uint256(0xF0F0)));
@@ -225,7 +225,7 @@ contract CorridorTest is FhevmTest {
 
     // ── access control: only the operator may set the sealed ceiling ─────────────
     function test_onlyOperatorCanSetCeiling() public {
-        bytes32 id = keccak256("veil-auth");
+        bytes32 id = keccak256("cloistra-auth");
         Corridor c = _corridor(id, 1000, 100000, 0, 10000, 100000);
         (externalEuint64 ce, bytes memory ceP) = encryptUint64(5, MALLORY, address(c));
         vm.prank(MALLORY);
@@ -237,7 +237,7 @@ contract CorridorTest is FhevmTest {
     // The sender AND the operator are blind to every sealed policy value — this is what makes the
     // compliance line unscoutable and unleakable.
     function test_onlyOfficer_canDecryptSealedPolicy() public {
-        bytes32 id = keccak256("veil-disclose");
+        bytes32 id = keccak256("cloistra-disclose");
         Corridor c = _corridor(id, 100, 250, 50, 1000, 500);
         _transfer(c, 0, sender, RECIPIENT, 80); // create a per-sender running total to audit
 
@@ -260,7 +260,7 @@ contract CorridorTest is FhevmTest {
 
     // ── blind agent: the Corridor (the settler) cannot decrypt the engine's sealed mandate ──
     function test_blindCorridor_cannotDecryptMandate() public {
-        bytes32 id = keccak256("veil-blind");
+        bytes32 id = keccak256("cloistra-blind");
         Corridor c = _corridor(id, 100, 250, 50, 1000, 500);
 
         (euint64 perTradeCap, euint64 totalCap, euint64 drawdownPct) = engine.sealedLimits(id);
@@ -277,7 +277,7 @@ contract CorridorTest is FhevmTest {
 
     // ── LEAK-AUDIT: no event exposes any sealed value or the pass/fail bit ────────
     function test_leakAudit_noCleartextInEvents() public {
-        bytes32 id = keccak256("veil-leak");
+        bytes32 id = keccak256("cloistra-leak");
         // Secrets avoid the trivial constants {0,1,100} the circuit encrypts, so this tests real leakage.
         Corridor c = _corridor(id, 137, 9110, 0, 6130, 777); // cap, total, fund, ceiling=777
         uint64 amount = 88;

@@ -10,7 +10,7 @@
  * needs a funded-beyond-one-tx Sepolia corridor (Gate C/C2); the gate, provider, idempotency
  * key and payout call are all the production code path. Prints the real provider reference id.
  *
- * Run: pnpm --filter @veil/offramp exec tsx scripts/prove-loop.ts [movedAmount]
+ * Run: pnpm --filter @cloistra/offramp exec tsx scripts/prove-loop.ts [movedAmount]
  */
 import { loadConfig } from "../src/config.js";
 import { FlutterwaveProvider } from "../src/providers/flutterwave.js";

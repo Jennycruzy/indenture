@@ -1,7 +1,7 @@
 "use client";
 
 import type { Address, Hex } from "viem";
-import { CorridorReceipt, useReceiptFeed } from "~~/hooks/veil/useReceiptFeed";
+import { CorridorReceipt, useReceiptFeed } from "~~/hooks/cloistra/useReceiptFeed";
 
 const short = (a?: string, n = 4) => (a ? `${a.slice(0, 2 + n)}…${a.slice(-n)}` : "—");
 

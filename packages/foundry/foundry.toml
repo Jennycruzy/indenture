@@ -8,7 +8,7 @@ solc = "0.8.27"
 evm_version = "cancun"
 optimizer = true
 optimizer_runs = 800
-# via-IR: the sealed predicate + the VEIL corridor commit (officer + 3 proof-carrying sealed inputs)
+# via-IR: the sealed predicate + the CLOISTRA corridor commit (officer + 3 proof-carrying sealed inputs)
 # push past the legacy stack-based codegen's limit. The IR pipeline is the canonical fix for
 # stack-too-deep with the optimizer already on; semantics are unchanged.
 via_ir = true

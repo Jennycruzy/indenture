@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
-# Deploy the shared VEIL backbone (engine + demo cToken + ConfidentialFeed) to Sepolia.
+# Deploy the shared CLOISTRA backbone (engine + demo cToken + ConfidentialFeed) to Sepolia.
 #
-# The VEIL Corridor and the composability-proof consumers (Leash, SealedSettlement) are deployed
+# The CLOISTRA Corridor and the composability-proof consumers (Leash, SealedSettlement) are deployed
 # separately, where the operator/principal generates encrypted mandate inputs via the SDK.
 #
 # Required env vars:
@@ -31,7 +31,7 @@ fi
 # The Solidity script reads DEPLOYER_PRIVATE_KEY from env and self-broadcasts, so we do NOT pass
 # --private-key here (that would double-set the signer).
 FORGE_ARGS=(
-  script/DeployVeil.s.sol:DeployVeil
+  script/DeployCloistra.s.sol:DeployCloistra
   --rpc-url "$SEPOLIA_RPC_URL"
   --broadcast
 )
@@ -46,5 +46,5 @@ cd "$FOUNDRY_DIR"
 forge script "${FORGE_ARGS[@]}"
 
 echo
-echo "✅  VEIL backbone deployed to Sepolia."
+echo "✅  CLOISTRA backbone deployed to Sepolia."
 echo "    Copy the logged addresses + broadcast tx hashes into DEPLOYMENTS.md."

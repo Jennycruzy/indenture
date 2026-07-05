@@ -5,7 +5,7 @@ import {ZamaEthereumConfig} from "@fhevm/solidity/config/ZamaConfig.sol";
 import {FHE, euint64, externalEuint64} from "@fhevm/solidity/lib/FHE.sol";
 
 /// @title ConfidentialFeed — an independent sealed-value oracle (Order II).
-/// @author VEIL (clean-room; unaudited demonstration)
+/// @author CLOISTRA (clean-room; unaudited demonstration)
 /// @notice A standalone contract that publishes a SEALED value (e.g. a settlement price or an
 ///         index level). It is deliberately SEPARATE from the sealed-mandate engine: its encrypted
 ///         value flows into the mandate predicate across a contract boundary, read by an authorized

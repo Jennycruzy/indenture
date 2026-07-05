@@ -5,9 +5,9 @@ import {ZamaEthereumConfig} from "@fhevm/solidity/config/ZamaConfig.sol";
 import {FHE, euint64, ebool, externalEuint64, externalEbool} from "@fhevm/solidity/lib/FHE.sol";
 import {IERC7984} from "@openzeppelin/confidential-contracts/interfaces/IERC7984.sol";
 
-/// @title Veil — the sealed-mandate engine.
-/// @author VEIL (clean-room; unaudited demonstration)
-/// @notice VEIL encrypts *the rule*, not just the amount — and hides the rule even from
+/// @title Cloistra — the sealed-mandate engine.
+/// @author CLOISTRA (clean-room; unaudited demonstration)
+/// @notice CLOISTRA encrypts *the rule*, not just the amount — and hides the rule even from
 ///         the actor it governs. This engine holds ERC-7984 confidential-token custody and
 ///         enforces a SEALED, encrypted mandate (per-trade cap, total exposure cap, drawdown
 ///         floor, payee allowlist) homomorphically. The delegated `agent` is BLIND: it holds
@@ -23,7 +23,7 @@ import {IERC7984} from "@openzeppelin/confidential-contracts/interfaces/IERC7984
 ///         feed encrypted inputs in; every fund-out flows through the single internal `_settle`.
 ///         Real FHE + threshold decryption run only on Sepolia; local tests use Zama's cleartext
 ///         harness. No addresses are hardcoded — `ZamaEthereumConfig` selects them by chainId.
-contract Veil is ZamaEthereumConfig {
+contract Cloistra is ZamaEthereumConfig {
     struct Mandate {
         // ── sealed mandate (the rule; decrypt-granted to principal ONLY) ──
         euint64 perTradeCap; // max sealed amount movable in a single settlement
@@ -34,9 +34,9 @@ contract Veil is ZamaEthereumConfig {
         euint64 custody; // this mandate's sealed confidential-token balance held by the engine
         euint64 highWaterMark; // sealed peak custody, for the drawdown floor
         // ── public bookkeeping ──
-        address principal; // commits/rotates/funds the mandate (VEIL: the corridor operator)
+        address principal; // commits/rotates/funds the mandate (CLOISTRA: the corridor operator)
         // The ONLY address granted decrypt rights (the audit role). Defaults to `principal` for legacy
-        // mandates (`commitMandate`); a VEIL corridor sets a DISTINCT compliance officer via
+        // mandates (`commitMandate`); a CLOISTRA corridor sets a DISTINCT compliance officer via
         // `commitMandateFor`, so the operator commits the policy but can never read it (Phase B step 3).
         address complianceOfficer;
         address agent; // authorized settler (an EOA agent, or a consumer contract); BLIND
@@ -109,7 +109,7 @@ contract Veil is ZamaEthereumConfig {
         );
     }
 
-    /// @notice VEIL: commit a sealed mandate with a DISTINCT compliance officer as the audit role.
+    /// @notice CLOISTRA: commit a sealed mandate with a DISTINCT compliance officer as the audit role.
     ///         The operator (msg.sender) commits, funds, and screens, but is granted NO decrypt rights;
     ///         only `complianceOfficer` may decrypt the sealed policy and flagged outcomes (Phase B §3).
     function commitMandateFor(
@@ -246,12 +246,12 @@ contract Veil is ZamaEthereumConfig {
         (receipt,) = _settle(id, clientNonce, payee, amount, extraOk, false);
     }
 
-    /// @notice VEIL corridor settlement: like `settleWithCondition`, but returns the sealed `moved`
+    /// @notice CLOISTRA corridor settlement: like `settleWithCondition`, but returns the sealed `moved`
     ///         handle and grants the calling consumer (the agent) transient COMPUTE rights on it, so it
     ///         can chain the actually-moved amount into its own encrypted accounting (the per-sender
     ///         velocity accumulator) IN THIS TX WITHOUT DECRYPTING IT. `moved ∈ {0, amount}`; a compute
     ///         grant to a contract decrypts nothing (user-decryption needs a granted EOA too), so the
-    ///         blind-agent-over-policy and leak guarantees are untouched (see VEIL_DESIGN.md §4).
+    ///         blind-agent-over-policy and leak guarantees are untouched (see CLOISTRA_DESIGN.md §4).
     /// @dev Caller MUST be the mandate's `agent`; `amount` and `extraOk` MUST be `allowTransient`'d to
     ///      this engine by the caller.
     function settleCorridor(bytes32 id, uint256 clientNonce, address payee, euint64 amount, ebool extraOk)
@@ -308,7 +308,7 @@ contract Veil is ZamaEthereumConfig {
         FHE.allow(m.spent, m.complianceOfficer);
         FHE.allow(m.custody, m.complianceOfficer);
         FHE.allow(moved, m.complianceOfficer);
-        // VEIL: optionally let the consumer (the agent) COMPUTE on the sealed outcome this tx so it can
+        // CLOISTRA: optionally let the consumer (the agent) COMPUTE on the sealed outcome this tx so it can
         // advance its own encrypted accounting (velocity accumulator). Compute-only — decrypts nothing.
         if (grantAgentMoved) FHE.allowTransient(moved, msg.sender);
 
@@ -348,7 +348,7 @@ contract Veil is ZamaEthereumConfig {
 
     /// @notice The mandate's audit role — the ONLY address granted decrypt rights over the sealed
     ///         policy and flagged outcomes. Equals the principal for legacy mandates; a distinct
-    ///         compliance officer for a VEIL corridor (committed via `commitMandateFor`).
+    ///         compliance officer for a CLOISTRA corridor (committed via `commitMandateFor`).
     function mandateComplianceOfficer(bytes32 id) external view returns (address) {
         return _mandates[id].complianceOfficer;
     }

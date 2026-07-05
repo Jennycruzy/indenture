@@ -58,12 +58,12 @@ export async function processSettlement(
   // 4. Pay out (idempotent on nonce). `moved` is in confidential-token base units — map to
   //    local-currency units here (FX + decimals) per the corridor's settlement contract.
   const amount = mapToLocalAmount(moved, beneficiary.currency);
-  const reference = `veil-${cfg.chain.corridorAddress}-${ev.nonce}`;
+  const reference = `cloistra-${cfg.chain.corridorAddress}-${ev.nonce}`;
   const result = await provider.payout({
     reference,
     amount,
     beneficiary,
-    narration: `VEIL corridor clear nonce ${ev.nonce}`,
+    narration: `CLOISTRA corridor clear nonce ${ev.nonce}`,
   });
   return {
     kind: "paid",

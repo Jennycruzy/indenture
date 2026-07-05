@@ -138,7 +138,7 @@
 }
 
 /* ─────────────────────────────────────────────────────────────────────────
-   SEALED OBSIDIAN — VEIL's design language.
+   SEALED OBSIDIAN — CLOISTRA's design language.
    A serious confidential-finance instrument that feels quietly magical.
    The app is its own visual world (near-black obsidian) regardless of theme.
    ───────────────────────────────────────────────────────────────────────── */
@@ -406,7 +406,7 @@
   color: var(--ob-ink-dim);
 }
 
-.veil-input {
+.cloistra-input {
   width: 100%;
   padding: 0.6rem 0.85rem;
   border-radius: 10px;
@@ -418,9 +418,9 @@
   outline: none;
   transition: border-color 300ms ease;
 }
-.veil-input:focus {
+.cloistra-input:focus {
   border-color: var(--ob-seal-b);
 }
-.veil-input::placeholder {
+.cloistra-input::placeholder {
   color: var(--ob-ink-faint);
 }

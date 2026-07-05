@@ -1,6 +1,6 @@
-# VEIL_DESIGN.md — sealing the compliance rulebook
+# CLOISTRA_DESIGN.md — sealing the compliance rulebook
 
-> **VEIL** is the product face; **`Veil` / `Veil.sol`** stay the internal engine names
+> **CLOISTRA** is the product face; **`Cloistra` / `Cloistra.sol`** stay the internal engine names
 > (the repo, deploy scripts, and verified Sepolia addresses depend on them). This document locks the
 > design _before_ code: the role re-cast, the three sealed rules incl. the net-new encrypted velocity
 > accumulator, and the compliance-officer disclosure model. No mechanism here contradicts what is
@@ -13,7 +13,7 @@
 Everyone else encrypts the **payment** and publishes the **rules** — the amount is ciphertext but the
 cap, the screening list, and the velocity ceiling are readable, so a launderer can see exactly where the
 line is and structure under it, a competitor can copy the corridor's risk model, and the operator can
-leak it. **VEIL seals the rulebook itself.** The cap, the recipient screening, and the per-sender
+leak it. **CLOISTRA seals the rulebook itself.** The cap, the recipient screening, and the per-sender
 velocity ceiling are all ciphertext; every payment is still checked against them homomorphically; but
 no one — not the sender, not a bad actor probing the boundary, not a competitor, not the operator — can
 read where the compliance line sits. Only a designated **compliance officer** can decrypt a specific
@@ -23,7 +23,7 @@ flagged transfer to audit it.
 
 ## 1. Role re-cast (copy layer; Solidity identifiers unchanged)
 
-| Engine concept (existing)              | VEIL corridor meaning                                                                |
+| Engine concept (existing)              | CLOISTRA corridor meaning                                                            |
 | -------------------------------------- | ------------------------------------------------------------------------------------ |
 | `principal` (mandate committer)        | **corridor operator** — the licensed remittance provider that sets the sealed policy |
 | `agent` (delegated mover)              | **sender** — the party submitting a cross-border payment (via the `Corridor`)        |
@@ -152,7 +152,7 @@ operator and sender must NOT be able to decrypt the sealed policy at runtime.
   in the engine (`fund`, `setPayeeAllowed`, `_settle`) is switched from `msg.sender`/`m.principal` to
   `m.complianceOfficer`. For legacy mandates `complianceOfficer == principal`, so the grants are
   **identical** and the 28 existing tests pass unchanged.
-- A new `commitMandateFor(..., address complianceOfficer)` sets a _distinct_ officer. For a VEIL corridor
+- A new `commitMandateFor(..., address complianceOfficer)` sets a _distinct_ officer. For a CLOISTRA corridor
   the operator commits with `complianceOfficer = <officer address>`; the operator (principal) is then
   granted **no** decrypt rights — it can commit, fund, screen, and rotate (all compute-only via
   `allowThis`, which the engine holds), but it cannot read the sealed policy or the flagged outcomes.
@@ -191,7 +191,7 @@ _compliance_, not just secrecy.
 
 | Design element                                                         | File                                               |
 | ---------------------------------------------------------------------- | -------------------------------------------------- |
-| `complianceOfficer` + `commitMandateFor` + `settleCorridor` (additive) | `packages/foundry/src/Veil.sol`                    |
+| `complianceOfficer` + `commitMandateFor` + `settleCorridor` (additive) | `packages/foundry/src/Cloistra.sol`                |
 | velocity accumulator, three-rule predicate, officer grants             | `packages/foundry/src/orders/Corridor.sol` (new)   |
 | cap/screen/velocity/rollover/combined/disclosure/leak-audit tests      | `packages/foundry/test/Corridor.t.sol` (new)       |
 | real Sepolia corridor tx hashes                                        | `DEPLOYMENTS.md` (Phase C — needs funded key)      |

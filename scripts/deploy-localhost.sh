@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Deploy VEIL to a running anvil node at 127.0.0.1:8545 and regenerate
+# Deploy CLOISTRA to a running anvil node at 127.0.0.1:8545 and regenerate
 # the frontend's per-contract ABI/address files.
 #
 # Prereq: `pnpm chain` is running in another terminal. That script starts
@@ -21,7 +21,7 @@ if ! cast chain-id --rpc-url "$RPC_URL" >/dev/null 2>&1; then
     exit 1
 fi
 
-echo "▸ Deploying VEIL"
+echo "▸ Deploying CLOISTRA"
 cd "$FOUNDRY_DIR"
 # foundry.toml references SEPOLIA_RPC_URL / ETHERSCAN_API_KEY under
 # [rpc_endpoints] / [etherscan]. forge 1.x refuses to load the config if
@@ -33,7 +33,7 @@ export SEPOLIA_RPC_URL ETHERSCAN_API_KEY
 
 deploy_log="$(mktemp)"
 trap 'rm -f "$deploy_log"' EXIT
-if ! DEPLOYER_PRIVATE_KEY="$ANVIL_PK" forge script script/DeployVeil.s.sol:DeployVeil \
+if ! DEPLOYER_PRIVATE_KEY="$ANVIL_PK" forge script script/DeployCloistra.s.sol:DeployCloistra \
     --rpc-url "$RPC_URL" \
     --broadcast \
     >"$deploy_log" 2>&1; then
@@ -41,7 +41,7 @@ if ! DEPLOYER_PRIVATE_KEY="$ANVIL_PK" forge script script/DeployVeil.s.sol:Deplo
     cat "$deploy_log" >&2
     exit 1
 fi
-grep -E "VEIL|Veil|DemoConfidentialToken|ConfidentialFeed|===" "$deploy_log" || true
+grep -E "CLOISTRA|Cloistra|DemoConfidentialToken|ConfidentialFeed|===" "$deploy_log" || true
 
 echo
 echo "▸ Regenerating frontend ABIs + addresses"
@@ -49,5 +49,5 @@ cd "$REPO_ROOT"
 pnpm generate
 
 echo
-echo "✅  Local dev stack ready. Frontend reads VEIL addresses from"
-echo "    packages/nextjs/contracts/veil/Veil.ts (+ Veil.local.ts)."
+echo "✅  Local dev stack ready. Frontend reads CLOISTRA addresses from"
+echo "    packages/nextjs/contracts/cloistra/Cloistra.ts (+ Cloistra.local.ts)."

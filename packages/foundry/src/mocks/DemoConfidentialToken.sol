@@ -5,11 +5,11 @@ import {ZamaEthereumConfig} from "@fhevm/solidity/config/ZamaConfig.sol";
 import {FHE, euint64} from "@fhevm/solidity/lib/FHE.sol";
 import {ERC7984} from "@openzeppelin/confidential-contracts/token/ERC7984/ERC7984.sol";
 
-/// @title DemoConfidentialToken — an ERC-7984 confidential token for VEIL demos.
+/// @title DemoConfidentialToken — an ERC-7984 confidential token for CLOISTRA demos.
 /// @notice UNAUDITED DEMONSTRATION ONLY. This is a plain confidential fungible token
 ///         (ERC-7984) with an open `mint` so the demo principal can fund a mandate's
-///         custody. It carries none of VEIL's sealed-mandate logic — that lives in
-///         `Veil.sol`. In production this would be a real cToken (e.g. cUSDT) from
+///         custody. It carries none of CLOISTRA's sealed-mandate logic — that lives in
+///         `Cloistra.sol`. In production this would be a real cToken (e.g. cUSDT) from
 ///         the Zama testnet registry; nothing in the engine depends on this mock.
 contract DemoConfidentialToken is ERC7984, ZamaEthereumConfig {
     constructor(string memory name_, string memory symbol_, string memory tokenURI_)

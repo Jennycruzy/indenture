@@ -41,7 +41,7 @@ type ContractEntry = Deployment & { abi: unknown[] };
  *  When multiple scripts deploy the same contract to the same chain, the
  *  most-recently-modified broadcast wins.
  *
- *  Reads every historical `run-NNN.json` (not just `run-latest.json`) so that
+ *  Reads every prior `run-NNN.json` (not just `run-latest.json`) so that
  *  incremental deploy scripts — where a partial run replaces run-latest with
  *  only the freshly-deployed CREATEs — don't drop the addresses of reused
  *  contracts that were CREATE'd in earlier runs of the same script. */
@@ -207,7 +207,7 @@ async function ensureLocalStubs() {
 }
 
 /** Wipe any previously-generated per-contract files that no longer have a
- *  broadcast entry, so renamed/removed contracts don't leave stale bundles.
+ *  broadcast entry, so removed contracts don't leave stale bundles.
  *
  *  Skipped when no broadcasts exist at all (fresh clone / CI install) — in that
  *  case the tracked main files came from git and shouldn't be deleted. */

@@ -1,8 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { CipherGlyphs } from "~~/components/veil/CipherGlyphs";
-import { VeilShell } from "~~/components/veil/VeilShell";
+import { CipherGlyphs } from "~~/components/cloistra/CipherGlyphs";
+import { CloistraShell } from "~~/components/cloistra/CloistraShell";
 
 const rules = [
   {
@@ -42,7 +42,7 @@ const consoles = [
 
 export default function Home() {
   return (
-    <VeilShell showCorridorBar={false}>
+    <CloistraShell showCorridorBar={false}>
       {/* Hero */}
       <section className="ob-card p-8 md:p-10">
         <div className="ob-chip mb-5">a category of its own</div>
@@ -52,7 +52,7 @@ export default function Home() {
           and <span className="ob-seal-text">publishes the rules</span>.
         </h1>
         <p className="ob-display text-2xl md:text-3xl font-semibold mt-3">
-          VEIL seals the <span className="ob-warm-text">rules</span>.
+          CLOISTRA seals the <span className="ob-warm-text">rules</span>.
         </p>
         <p className="mt-5 max-w-2xl text-base md:text-lg" style={{ color: "var(--ob-ink-dim)" }}>
           The cap, the screening list, and the velocity ceiling are all ciphertext. Every transfer is still checked
@@ -133,9 +133,9 @@ export default function Home() {
           compliance policy are real on Sepolia via the FHEVM coprocessor / KMS / relayer. Local tests use Zama&rsquo;s
           cleartext harness. The optional naira off-ramp is a licensed provider&rsquo;s <strong>sandbox</strong> payout
           proving the integration — not production money movement. The engine identifier stays{" "}
-          <span className="ob-mono">Veil</span>; VEIL is the product face.
+          <span className="ob-mono">Cloistra</span>; CLOISTRA is the product face.
         </p>
       </section>
-    </VeilShell>
+    </CloistraShell>
   );
 }

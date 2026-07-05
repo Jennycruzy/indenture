@@ -3,7 +3,7 @@ pragma solidity ^0.8.27;
 
 import {FhevmTest} from "forge-fhevm/FhevmTest.sol";
 import {FHE, euint64, ebool, externalEuint64, externalEbool} from "@fhevm/solidity/lib/FHE.sol";
-import {Veil} from "../src/Veil.sol";
+import {Cloistra} from "../src/Cloistra.sol";
 import {SealedSettlement} from "../src/orders/SealedSettlement.sol";
 import {ConfidentialFeed} from "../src/orders/ConfidentialFeed.sol";
 import {DemoConfidentialToken} from "../src/mocks/DemoConfidentialToken.sol";
@@ -16,7 +16,7 @@ import {IERC7984} from "@openzeppelin/confidential-contracts/interfaces/IERC7984
 ///      buyer or the public; and the consumer-as-agent stays blind to the mandate. Runs on Zama's
 ///      cleartext harness (fast iteration); definition of done is real Sepolia tx hashes.
 contract SealedSettlementTest is FhevmTest {
-    Veil internal engine;
+    Cloistra internal engine;
     DemoConfidentialToken internal token;
     ConfidentialFeed internal feed;
 
@@ -34,8 +34,8 @@ contract SealedSettlementTest is FhevmTest {
         principal = vm.addr(PRINCIPAL_PK);
         buyer = vm.addr(BUYER_PK);
         publisher = vm.addr(PUBLISHER_PK);
-        engine = new Veil();
-        token = new DemoConfidentialToken("Veil USD", "vUSD", "");
+        engine = new Cloistra();
+        token = new DemoConfidentialToken("Cloistra USD", "clUSD", "");
         feed = new ConfidentialFeed(publisher);
     }
 
@@ -224,7 +224,7 @@ contract SealedSettlementTest is FhevmTest {
         _exercise(s, 0); // nonce -> 1
 
         vm.prank(buyer);
-        vm.expectRevert(Veil.StaleNonce.selector);
+        vm.expectRevert(Cloistra.StaleNonce.selector);
         s.exercise(0); // stale nonce 0 reverts
     }
 

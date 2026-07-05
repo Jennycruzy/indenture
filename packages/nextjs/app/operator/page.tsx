@@ -1,13 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import { ConnectGate } from "~~/components/veil/ConnectGate";
-import { NotConfigured } from "~~/components/veil/NotConfigured";
-import { SealedValue } from "~~/components/veil/SealedValue";
-import { VeilShell } from "~~/components/veil/VeilShell";
-import { useCorridor } from "~~/hooks/veil/useCorridor";
-import { useSealedHandles } from "~~/hooks/veil/useSealedHandles";
-import { useOperatorActions } from "~~/hooks/veil/useVeilActions";
+import { CloistraShell } from "~~/components/cloistra/CloistraShell";
+import { ConnectGate } from "~~/components/cloistra/ConnectGate";
+import { NotConfigured } from "~~/components/cloistra/NotConfigured";
+import { SealedValue } from "~~/components/cloistra/SealedValue";
+import { useOperatorActions } from "~~/hooks/cloistra/useCloistraActions";
+import { useCorridor } from "~~/hooks/cloistra/useCorridor";
+import { useSealedHandles } from "~~/hooks/cloistra/useSealedHandles";
 
 const txLink = (h?: string) => (h ? `https://sepolia.etherscan.io/tx/${h}` : undefined);
 
@@ -30,7 +30,7 @@ export default function OperatorPage() {
   };
 
   return (
-    <VeilShell>
+    <CloistraShell>
       <ConnectGate>
         {!configured ? (
           <NotConfigured />
@@ -67,7 +67,7 @@ export default function OperatorPage() {
                 desc="Rule 3 — the per-sender velocity ceiling. Encrypted client-side; readable only by the officer."
               >
                 <input
-                  className="veil-input"
+                  className="cloistra-input"
                   placeholder="ceiling amount"
                   value={ceiling}
                   onChange={e => setCeilingInput(e.target.value)}
@@ -90,7 +90,7 @@ export default function OperatorPage() {
                 desc="Rule 2 — rotate a sealed allow/deny bit. Default-deny. The address is public; the verdict is sealed."
               >
                 <input
-                  className="veil-input"
+                  className="cloistra-input"
                   placeholder="0x… recipient"
                   value={screenAddr}
                   onChange={e => setScreenAddr(e.target.value)}
@@ -115,10 +115,10 @@ export default function OperatorPage() {
 
               <ActionCard
                 title="Fund sealed custody"
-                desc="Mint demo vUSD, authorise the engine, and pull an encrypted amount into custody."
+                desc="Mint demo clUSD, authorise the engine, and pull an encrypted amount into custody."
               >
                 <input
-                  className="veil-input"
+                  className="cloistra-input"
                   placeholder="amount"
                   value={fundAmt}
                   onChange={e => setFundAmt(e.target.value)}
@@ -152,7 +152,7 @@ export default function OperatorPage() {
           </>
         )}
       </ConnectGate>
-    </VeilShell>
+    </CloistraShell>
   );
 }
 

@@ -3,17 +3,17 @@
 import { useMemo, useState } from "react";
 import { isAddress } from "viem";
 import type { Address, Hex } from "viem";
-import { ConnectGate } from "~~/components/veil/ConnectGate";
-import { NotConfigured } from "~~/components/veil/NotConfigured";
-import { ReceiptRibbon } from "~~/components/veil/ReceiptRibbon";
-import { SealedGate } from "~~/components/veil/SealedGate";
-import { SealedValue } from "~~/components/veil/SealedValue";
-import { VeilShell } from "~~/components/veil/VeilShell";
-import { VelocityMeter } from "~~/components/veil/VelocityMeter";
-import { useCorridor } from "~~/hooks/veil/useCorridor";
-import { AuditTarget, useOfficerDecrypt } from "~~/hooks/veil/useOfficerDecrypt";
-import { CorridorReceipt } from "~~/hooks/veil/useReceiptFeed";
-import { useSealedHandles } from "~~/hooks/veil/useSealedHandles";
+import { CloistraShell } from "~~/components/cloistra/CloistraShell";
+import { ConnectGate } from "~~/components/cloistra/ConnectGate";
+import { NotConfigured } from "~~/components/cloistra/NotConfigured";
+import { ReceiptRibbon } from "~~/components/cloistra/ReceiptRibbon";
+import { SealedGate } from "~~/components/cloistra/SealedGate";
+import { SealedValue } from "~~/components/cloistra/SealedValue";
+import { VelocityMeter } from "~~/components/cloistra/VelocityMeter";
+import { useCorridor } from "~~/hooks/cloistra/useCorridor";
+import { AuditTarget, useOfficerDecrypt } from "~~/hooks/cloistra/useOfficerDecrypt";
+import { CorridorReceipt } from "~~/hooks/cloistra/useReceiptFeed";
+import { useSealedHandles } from "~~/hooks/cloistra/useSealedHandles";
 
 export default function OfficerPage() {
   const { configured, address: corridor, engine, mandateId, role } = useCorridor();
@@ -49,7 +49,7 @@ export default function OfficerPage() {
   const verdict = outcomeVal === undefined ? undefined : outcomeVal === 0n ? "nullified" : "cleared";
 
   return (
-    <VeilShell>
+    <CloistraShell>
       <ConnectGate>
         {!configured ? (
           <NotConfigured />
@@ -117,7 +117,7 @@ export default function OfficerPage() {
                   audit sender
                 </label>
                 <input
-                  className="veil-input mt-1"
+                  className="cloistra-input mt-1"
                   placeholder="0x… sender to audit"
                   value={auditSender}
                   onChange={e => setAuditSender(e.target.value)}
@@ -194,6 +194,6 @@ export default function OfficerPage() {
           </>
         )}
       </ConnectGate>
-    </VeilShell>
+    </CloistraShell>
   );
 }

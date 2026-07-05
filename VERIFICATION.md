@@ -1,9 +1,9 @@
-# VERIFICATION.md — VEIL Gate
+# VERIFICATION.md — CLOISTRA Gate
 
-VEIL evidence must start with this gate:
+CLOISTRA evidence must start with this gate:
 
 ```bash
-pnpm veil:gate
+pnpm cloistra:gate
 ```
 
 The gate enforces:
@@ -17,7 +17,7 @@ The gate enforces:
 
 ## Network Position
 
-VEIL uses `ZamaEthereumConfig`, so deployment is only meaningful on networks with the required Zama FHEVM infrastructure. Sepolia is the first live target. Ethereum mainnet deployment is not approved until FHEVM mainnet support, contract verification, operational custody, and compliance posture are confirmed.
+CLOISTRA uses `ZamaEthereumConfig`, so deployment is only meaningful on networks with the required Zama FHEVM infrastructure. Sepolia is the first live target. Ethereum mainnet deployment is not approved until FHEVM mainnet support, contract verification, operational custody, and compliance posture are confirmed.
 
 ## Fiat Off-Ramp
 

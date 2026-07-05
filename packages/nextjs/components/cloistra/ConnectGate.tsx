@@ -4,7 +4,7 @@ import { useAccount } from "wagmi";
 import { RainbowKitCustomConnectButton } from "~~/components/helper";
 
 /** Renders children only once a wallet is connected; otherwise a connect prompt in the
- *  obsidian language. Every VEIL action is a signed, wallet-approved transaction. */
+ *  obsidian language. Every CLOISTRA action is a signed, wallet-approved transaction. */
 export function ConnectGate({ children }: { children: React.ReactNode }) {
   const { isConnected } = useAccount();
   if (isConnected) return <>{children}</>;

@@ -3,12 +3,12 @@ pragma solidity ^0.8.27;
 
 import {ZamaEthereumConfig} from "@fhevm/solidity/config/ZamaConfig.sol";
 import {FHE, euint64, ebool, externalEuint64} from "@fhevm/solidity/lib/FHE.sol";
-import {Veil} from "../Veil.sol";
+import {Cloistra} from "../Cloistra.sol";
 
-/// @title Corridor — VEIL: a confidential cross-border payment corridor whose COMPLIANCE RULEBOOK is
-///        sealed (product name VEIL; engine name `Veil`).
+/// @title Corridor — CLOISTRA: a confidential cross-border payment corridor whose COMPLIANCE RULEBOOK is
+///        sealed (product name CLOISTRA; engine name `Cloistra`).
 ///
-/// @notice Everyone else encrypts the payment and publishes the rules. VEIL seals the rules. This
+/// @notice Everyone else encrypts the payment and publishes the rules. CLOISTRA seals the rules. This
 ///         consumer adds the one net-new primitive on top of the sealed-mandate engine: a SEALED,
 ///         PER-SENDER ROLLING VELOCITY CEILING enforced by an ENCRYPTED running accumulator that
 ///         resets on a public time-window boundary — no decryption, no encrypted division.
@@ -29,7 +29,7 @@ import {Veil} from "../Veil.sol";
 ///         nonce before each transfer. Real FHE + threshold decryption run only on Sepolia; local tests
 ///         use Zama's cleartext harness.
 contract Corridor is ZamaEthereumConfig {
-    Veil public immutable engine;
+    Cloistra public immutable engine;
     bytes32 public immutable mandateId;
     /// @notice The corridor operator (== the mandate principal on the engine). Commits/funds/screens and
     ///         sets the sealed ceiling — but holds NO decrypt rights over any sealed policy value.
@@ -56,7 +56,7 @@ contract Corridor is ZamaEthereumConfig {
     error NotOperator();
     error CeilingUnset();
 
-    constructor(Veil _engine, bytes32 _mandateId, address _operator, address _complianceOfficer, uint256 _window) {
+    constructor(Cloistra _engine, bytes32 _mandateId, address _operator, address _complianceOfficer, uint256 _window) {
         engine = _engine;
         mandateId = _mandateId;
         operator = _operator;
@@ -120,7 +120,7 @@ contract Corridor is ZamaEthereumConfig {
         // The engine ANDs Rule 3 into Rules 1+2 (+ its own custody/drawdown) and settles via the single
         // `FHE.select`. It returns the sealed `moved` amount (0 if nullified for ANY reason) and grants
         // THIS contract transient COMPUTE rights on it, so we can advance the accumulator without ever
-        // decrypting it (a contract compute-grant decrypts nothing — see VEIL_DESIGN.md §4).
+        // decrypting it (a contract compute-grant decrypts nothing — see CLOISTRA_DESIGN.md §4).
         euint64 moved;
         (receipt, moved) = engine.settleCorridor(mandateId, clientNonce, recipient, amount, withinVelocity);
 

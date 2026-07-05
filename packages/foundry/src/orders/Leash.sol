@@ -3,7 +3,7 @@ pragma solidity ^0.8.27;
 
 import {ZamaEthereumConfig} from "@fhevm/solidity/config/ZamaConfig.sol";
 import {FHE, euint64, externalEuint64} from "@fhevm/solidity/lib/FHE.sol";
-import {Veil} from "../Veil.sol";
+import {Cloistra} from "../Cloistra.sol";
 
 /// @title Leash — Order I: the blind single-agent composability proof.
 /// @notice A fund/treasury delegates execution to an autonomous agent that is *physically
@@ -17,7 +17,7 @@ import {Veil} from "../Veil.sol";
 ///         agent) and calls `execute` directly, so `FHE.fromExternal` verifies against the true
 ///         caller — a forged/proofless ciphertext reverts here, on-chain, at input verification.
 contract Leash is ZamaEthereumConfig {
-    Veil public immutable engine;
+    Cloistra public immutable engine;
     bytes32 public immutable mandateId;
     /// @notice The blind executor. It authorizes moves but holds NO ACL decrypt rights over the
     ///         sealed mandate — it cannot read the very limits it is bound by.
@@ -25,7 +25,7 @@ contract Leash is ZamaEthereumConfig {
 
     error NotAgent();
 
-    constructor(Veil _engine, bytes32 _mandateId, address _agent) {
+    constructor(Cloistra _engine, bytes32 _mandateId, address _agent) {
         engine = _engine;
         mandateId = _mandateId;
         agent = _agent;

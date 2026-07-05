@@ -3,8 +3,8 @@
 import { useState } from "react";
 import { isAddress } from "viem";
 import type { Address } from "viem";
-import { useVeilStore } from "~~/hooks/veil/store";
-import { useCorridor } from "~~/hooks/veil/useCorridor";
+import { useCloistraStore } from "~~/hooks/cloistra/store";
+import { useCorridor } from "~~/hooks/cloistra/useCorridor";
 
 const short = (a?: string) => (a ? `${a.slice(0, 6)}…${a.slice(-4)}` : "—");
 
@@ -20,7 +20,7 @@ const roleChip: Record<string, { label: string; cls?: string }> = {
  *  role is read from chain. */
 export function CorridorBar() {
   const { address, configured, operator, complianceOfficer, ceilingSet, role, isLoading } = useCorridor();
-  const setActive = useVeilStore(s => s.setActive);
+  const setActive = useCloistraStore(s => s.setActive);
   const [draft, setDraft] = useState("");
   const [editing, setEditing] = useState(false);
 

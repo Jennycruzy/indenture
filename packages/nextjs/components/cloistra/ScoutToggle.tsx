@@ -1,6 +1,6 @@
 "use client";
 
-import { useVeilStore } from "~~/hooks/veil/store";
+import { useCloistraStore } from "~~/hooks/cloistra/store";
 
 /**
  * The scout's-eye toggle. Flips the view to what an outside on-chain observer sees:
@@ -8,8 +8,8 @@ import { useVeilStore } from "~~/hooks/veil/store";
  * launderer probing the boundary, or a competitor copying the risk model, learns nothing.
  */
 export function ScoutToggle() {
-  const scout = useVeilStore(s => s.scoutMode);
-  const toggle = useVeilStore(s => s.toggleScout);
+  const scout = useCloistraStore(s => s.scoutMode);
+  const toggle = useCloistraStore(s => s.toggleScout);
 
   return (
     <button

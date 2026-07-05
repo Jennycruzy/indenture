@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
-# Start anvil + FHEVM cleartext host stack + VEIL in one command.
+# Start anvil + FHEVM cleartext host stack + CLOISTRA in one command.
 #
 # Flow (2 terminals):
-#   pnpm chain   # this script — anvil + FHEVM host + VEIL
+#   pnpm chain   # this script — anvil + FHEVM host + CLOISTRA
 #   pnpm start   # frontend
 #
-# To redeploy VEIL without restarting anvil, run
+# To redeploy CLOISTRA without restarting anvil, run
 # `pnpm deploy:localhost` in another terminal.
 set -euo pipefail
 
@@ -71,11 +71,11 @@ echo "deploying FHEVM cleartext host stack..."
 # invalid value such as "testnet".
 (unset CHAIN FOUNDRY_CHAIN DAPP_CHAIN; cd "$FORGE_FHEVM_DIR" && ./deploy-local.sh --rpc-url "$RPC_URL")
 
-echo "deploying VEIL..."
+echo "deploying CLOISTRA..."
 RPC_URL="$RPC_URL" "$SCRIPT_DIR/deploy-localhost.sh"
 
 echo
-echo "✓ anvil + FHEVM host + VEIL ready on $RPC_URL (chain id 31337)"
+echo "✓ anvil + FHEVM host + CLOISTRA ready on $RPC_URL (chain id 31337)"
 echo "  next: pnpm start (in another terminal)"
 echo
 

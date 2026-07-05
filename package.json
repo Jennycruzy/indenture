@@ -1,5 +1,5 @@
 {
-  "name": "root",
+  "name": "cloistra",
   "version": "0.4.0",
   "private": true,
   "license": "BSD-3-Clause-Clear",
@@ -15,7 +15,7 @@
   "scripts": {
     "chain": "./scripts/chain.sh",
     "deploy:localhost": "./scripts/deploy-localhost.sh",
-    "deploy:sepolia": "./scripts/deploy-veil-sepolia.sh",
+    "deploy:sepolia": "./scripts/deploy-cloistra-sepolia.sh",
     "generate": "ts-node ./scripts/generateTsAbis.ts",
     "postinstall": "ts-node ./scripts/generateTsAbis.ts || true",
     "contracts:install": "cd packages/foundry && forge soldeer install",
@@ -31,8 +31,8 @@
     "next:check-types": "pnpm --filter ./packages/nextjs check-types",
     "next:lint": "pnpm --filter ./packages/nextjs lint",
     "next:serve": "pnpm --filter ./packages/nextjs serve",
-    "offramp:check-types": "pnpm --filter @veil/offramp check-types",
-    "veil:gate": "./scripts/veil-gate.sh",
+    "offramp:check-types": "pnpm --filter @cloistra/offramp check-types",
+    "cloistra:gate": "./scripts/cloistra-gate.sh",
     "vercel": "pnpm --filter ./packages/nextjs vercel",
     "vercel:login": "pnpm --filter ./packages/nextjs vercel:login",
     "vercel:yolo": "pnpm --filter ./packages/nextjs vercel:yolo",

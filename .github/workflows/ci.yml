@@ -41,8 +41,8 @@ jobs:
         working-directory: packages/foundry
         run: forge soldeer install
 
-      - name: VEIL gate
-        run: pnpm veil:gate
+      - name: CLOISTRA gate
+        run: pnpm cloistra:gate
 
       - name: frontend lint
         run: pnpm --filter ./packages/nextjs lint

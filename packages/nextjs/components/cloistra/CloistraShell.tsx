@@ -1,21 +1,21 @@
 "use client";
 
 import Link from "next/link";
-import { CorridorBar } from "~~/components/veil/CorridorBar";
-import { RoleTabs } from "~~/components/veil/RoleTabs";
-import { ScoutToggle } from "~~/components/veil/ScoutToggle";
-import { useVeilStore } from "~~/hooks/veil/store";
+import { CorridorBar } from "~~/components/cloistra/CorridorBar";
+import { RoleTabs } from "~~/components/cloistra/RoleTabs";
+import { ScoutToggle } from "~~/components/cloistra/ScoutToggle";
+import { useCloistraStore } from "~~/hooks/cloistra/store";
 
-/** The common frame for every VEIL view: the obsidian world, the brand, role tabs, the
+/** The common frame for every CLOISTRA view: the obsidian world, the brand, role tabs, the
  *  scout's-eye toggle, and the active-corridor bar. */
-export function VeilShell({
+export function CloistraShell({
   children,
   showCorridorBar = true,
 }: {
   children: React.ReactNode;
   showCorridorBar?: boolean;
 }) {
-  const scout = useVeilStore(s => s.scoutMode);
+  const scout = useCloistraStore(s => s.scoutMode);
 
   return (
     <div className={`obsidian w-full ${scout ? "ob-scout" : ""}`}>
@@ -23,7 +23,7 @@ export function VeilShell({
         <header className="flex flex-wrap items-center justify-between gap-3">
           <Link href="/" className="flex items-baseline gap-3 no-underline">
             <span className="ob-display text-2xl font-bold tracking-tight" style={{ color: "var(--ob-ink)" }}>
-              VEIL
+              CLOISTRA
             </span>
             <span className="text-xs" style={{ color: "var(--ob-ink-dim)" }}>
               the sealed compliance corridor
