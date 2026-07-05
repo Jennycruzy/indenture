@@ -43,16 +43,15 @@ Off-ramp evidence:
 - Officer decrypt processed the cleared transfer in block `11,211,032`; the payout adapter reached Flutterwave sandbox.
 - Flutterwave initially returned `400 Please enable IP Whitelisting to access this service`; resolved by whitelisting the listener's egress IP and enabling API transfers on the account.
 
-Gate C2 — full off-ramp loop closed (sandbox payout on a genuine on-chain clear):
+Gate C2 — full off-ramp loop closed with a SUCCESSFUL sandbox disbursement on a genuine on-chain clear:
 
-Funded custody, then submitted a transfer at the sealed per-transfer cap (100) that cleared every rule. The officer decrypted `moved = 100` and the Flutterwave v3 sandbox issued a payout.
+Funded custody, submitted a transfer at the sealed per-transfer cap (100) that cleared every rule; the officer decrypted `moved = 100` and the Flutterwave v3 sandbox disbursed it. In the v3 sandbox a transfer to a test account stays PENDING unless the reference carries a mock-callback suffix, so the payout reference is suffixed with `_PMCKDU_1` (config `FLW_TEST_REFERENCE_SUFFIX`, empty in production), which resolves to SUCCESSFUL after ~1 min.
 
 | Step                          | Detail                                                                                                                                                                                          |
 | ----------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Fund custody (+600)           | [`0xa2ba841653f7049258d3b43f4541ad3c5f8f5bfb9c937c5c879d3de8251a1532`](https://sepolia.etherscan.io/tx/0xa2ba841653f7049258d3b43f4541ad3c5f8f5bfb9c937c5c879d3de8251a1532)                      |
-| Sender transfer (100), clears | [`0xad5e008a5acef921140bc61022e7eb01d6105ce7ff3f6de794f7cfddef2b9597`](https://sepolia.etherscan.io/tx/0xad5e008a5acef921140bc61022e7eb01d6105ce7ff3f6de794f7cfddef2b9597) (block `11,211,316`) |
+| Sender transfer (100), clears | [`0xeeb263f35875c0d1aa599eacce882704eedf79bae8a370654707a433d6881e32`](https://sepolia.etherscan.io/tx/0xeeb263f35875c0d1aa599eacce882704eedf79bae8a370654707a433d6881e32) (block `11,211,728`) |
 | Officer decrypt               | sealed `moved` decrypted to `100`                                                                                                                                                               |
-| Flutterwave sandbox payout    | `provider=flutterwave-v3` `reference=cloistra-0x4A3c965edb96f74451fe5921686e44CbFF4a8A7b-3` `id=2192733` `amount=100 NGN` `status=NEW`                                                          |
+| Flutterwave sandbox payout    | `provider=flutterwave-v3` `reference=cloistra-0x4A3c965edb96f74451fe5921686e44CbFF4a8A7b-5_PMCKDU_1` `id=2192755` `amount=100 NGN` `status=SUCCESSFUL`                                          |
 
 Fresh deployment flow:
 

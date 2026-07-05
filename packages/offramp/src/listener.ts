@@ -58,7 +58,9 @@ export async function processSettlement(
   // 4. Pay out (idempotent on nonce). `moved` is in confidential-token base units — map to
   //    local-currency units here (FX + decimals) per the corridor's settlement contract.
   const amount = mapToLocalAmount(moved, beneficiary.currency);
-  const reference = `cloistra-${cfg.chain.corridorAddress}-${ev.nonce}`;
+  // Idempotent per (corridor, nonce); the suffix is a no-op in production and drives the sandbox
+  // mock disburse callback in test mode (see Config.flutterwave.referenceSuffix).
+  const reference = `cloistra-${cfg.chain.corridorAddress}-${ev.nonce}${cfg.flutterwave.referenceSuffix}`;
   const result = await provider.payout({
     reference,
     amount,

@@ -25,6 +25,12 @@ export type Config = {
     secretKey: string;
     /** API base. v3 test mode is keyed by the FLWSECK_TEST secret — no separate host. */
     baseUrl: string;
+    /**
+     * Sandbox-only suffix appended to the payout reference to drive Flutterwave's mock disburse
+     * callback (e.g. `_PMCKDU_1` → SUCCESSFUL after ~1 min; `_PMCK_ST_FDU_1` → FAILED). Without it,
+     * test transfers stay PENDING indefinitely. Leave empty in production.
+     */
+    referenceSuffix: string;
   };
   beneficiariesJson: string | undefined;
 };
@@ -54,6 +60,7 @@ export function loadConfig(): Config {
     flutterwave: {
       secretKey: req("FLW_SECRET_KEY"),
       baseUrl: opt("FLW_BASE_URL", "https://api.flutterwave.com/v3"),
+      referenceSuffix: opt("FLW_TEST_REFERENCE_SUFFIX", ""),
     },
     beneficiariesJson: process.env.BENEFICIARIES_JSON,
   };
