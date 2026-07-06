@@ -55,6 +55,17 @@ Funded custody, submitted a transfer at the sealed per-transfer cap (100) that c
 | Officer decrypt               | sealed `moved` decrypted to `100`                                                                                                                                                               |
 | Flutterwave sandbox payout    | `provider=flutterwave-v3` `reference=cloistra-0x4A3c965edb96f74451fe5921686e44CbFF4a8A7b-5_PMCKDU_1` `id=2192755` `amount=100 NGN` `status=SUCCESSFUL`                                          |
 
+Repeat run (2026-07-06) — loop closed again after the licensing/docs refresh, via `demo-run.ts 1 100` and `process-corridor-block.ts 11215099`:
+
+| Step                          | Detail                                                                                                                                                                                                                                                                                                                                                 |
+| ----------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Sealed ceiling + autoFund     | [`0xcf1a25f8899f4b1dcc56baaf3c57544d5afda213f6977a62e00502d592377bd6`](https://sepolia.etherscan.io/tx/0xcf1a25f8899f4b1dcc56baaf3c57544d5afda213f6977a62e00502d592377bd6), [`0x84df27e893b952b47369f4dbf58686d43ba8c2824a6d362dfa8058489872154f`](https://sepolia.etherscan.io/tx/0x84df27e893b952b47369f4dbf58686d43ba8c2824a6d362dfa8058489872154f) |
+| Sender transfer (100), clears | [`0x0a3da67bd1e87d29f151a115a18786c8282f990dbc98318af6042da69decbfb1`](https://sepolia.etherscan.io/tx/0x0a3da67bd1e87d29f151a115a18786c8282f990dbc98318af6042da69decbfb1) (block `11,215,099`, nonce `12`)                                                                                                                                            |
+| Officer decrypt               | sealed `moved` decrypted to `100` via relayer + threshold KMS                                                                                                                                                                                                                                                                                          |
+| Flutterwave sandbox payout    | `provider=flutterwave-v3` `reference=cloistra-0x4A3c965edb96f74451fe5921686e44CbFF4a8A7b-12_PMCKDU_1` `id=2192950` `amount=100 NGN` `status=SUCCESSFUL`                                                                                                                                                                                                |
+
+Idempotency check: re-processing an already-paid settlement (block `11,211,728`) is rejected by the provider with `Payout with this ref already exists` — one clear can never disburse twice.
+
 Fresh deployment flow:
 
 ```bash

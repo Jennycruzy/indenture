@@ -9,6 +9,7 @@ const TABS = [
   { href: "/operator", label: "Operator", role: "operator" },
   { href: "/sender", label: "Sender", role: "sender" },
   { href: "/officer", label: "Compliance", role: "officer" },
+  { href: "/docs", label: "Docs", role: null },
 ] as const;
 
 export function RoleTabs() {
