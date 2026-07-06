@@ -43,12 +43,16 @@ export function CorridorBar() {
   return (
     <div className="ob-card p-3 flex flex-wrap items-center gap-3 justify-between">
       <div className="flex flex-wrap items-center gap-3">
-        <span className="ob-mono text-[0.7rem] uppercase tracking-wider" style={{ color: "var(--ob-ink-dim)" }}>
-          corridor
-        </span>
-        <span className="ob-mono text-sm" style={{ color: "var(--ob-ink)" }}>
-          {configured ? short(address) : "none configured"}
-        </span>
+        {consoleRole === "operator" && (
+          <>
+            <span className="ob-mono text-[0.7rem] uppercase tracking-wider" style={{ color: "var(--ob-ink-dim)" }}>
+              corridor
+            </span>
+            <span className="ob-mono text-sm" style={{ color: "var(--ob-ink)" }}>
+              {configured ? short(address) : "none configured"}
+            </span>
+          </>
+        )}
         <span className={`ob-chip ${chip.cls ?? ""}`}>{chip.label}</span>
         {configured && (
           <span className="ob-chip" style={{ borderColor: ceilingSet ? "var(--ob-seal-b)" : "var(--ob-line)" }}>
@@ -57,42 +61,44 @@ export function CorridorBar() {
         )}
       </div>
 
-      <div className="flex items-center gap-2">
-        {editing ? (
-          <>
-            <input
-              value={draft}
-              onChange={e => setDraft(e.target.value)}
-              placeholder="0x… corridor address"
-              className="ob-mono text-xs px-3 py-1.5 rounded-lg outline-none"
-              style={{
-                background: "var(--ob-bg-2)",
-                border: "1px solid var(--ob-line)",
-                color: "var(--ob-ink)",
-                minWidth: 260,
-              }}
-            />
-            <button className="ob-btn ob-btn-seal" disabled={!isAddress(draft)} onClick={apply}>
-              set
+      {consoleRole === "operator" && (
+        <div className="flex items-center gap-2">
+          {editing ? (
+            <>
+              <input
+                value={draft}
+                onChange={e => setDraft(e.target.value)}
+                placeholder="0x… corridor address"
+                className="ob-mono text-xs px-3 py-1.5 rounded-lg outline-none"
+                style={{
+                  background: "var(--ob-bg-2)",
+                  border: "1px solid var(--ob-line)",
+                  color: "var(--ob-ink)",
+                  minWidth: 260,
+                }}
+              />
+              <button className="ob-btn ob-btn-seal" disabled={!isAddress(draft)} onClick={apply}>
+                set
+              </button>
+              <button className="ob-btn" onClick={() => setEditing(false)}>
+                cancel
+              </button>
+            </>
+          ) : (
+            <button className="ob-btn" onClick={() => setEditing(true)}>
+              {configured ? "change corridor" : "set corridor"}
             </button>
-            <button className="ob-btn" onClick={() => setEditing(false)}>
-              cancel
-            </button>
-          </>
-        ) : (
-          <button className="ob-btn" onClick={() => setEditing(true)}>
-            {configured ? "change corridor" : "set corridor"}
-          </button>
-        )}
-      </div>
+          )}
+        </div>
+      )}
 
-      {configured && (
-        <div
-          className="w-full flex flex-wrap gap-4 pt-1 ob-mono text-[0.66rem]"
-          style={{ color: "var(--ob-ink-faint)" }}
-        >
-          <span>operator {short(operator)}</span>
-          <span>officer {short(complianceOfficer)}</span>
+      {configured && (consoleRole === "operator" || consoleRole === "officer") && (
+        <div className="w-full pt-1 ob-mono text-[0.66rem]" style={{ color: "var(--ob-ink-faint)" }}>
+          {consoleRole === "operator" ? (
+            <span>operator {short(operator)}</span>
+          ) : (
+            <span>officer {short(complianceOfficer)}</span>
+          )}
         </div>
       )}
     </div>
