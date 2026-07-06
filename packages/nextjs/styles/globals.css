@@ -2,8 +2,6 @@
 
 @custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));
 
-@custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));
-
 @theme {
   --shadow-center: 0 0 12px -2px rgb(0 0 0 / 0.05);
   --animate-pulse-fast: pulse 1s cubic-bezier(0.4, 0, 0.6, 1) infinite;
@@ -18,22 +16,22 @@
 @plugin "daisyui/theme" {
   name: "light";
 
-  --color-primary: #93bbfb;
-  --color-primary-content: #212638;
-  --color-secondary: #dae8ff;
-  --color-secondary-content: #212638;
-  --color-accent: #93bbfb;
-  --color-accent-content: #212638;
-  --color-neutral: #212638;
+  --color-primary: #6366f1;
+  --color-primary-content: #ffffff;
+  --color-secondary: #eef1f9;
+  --color-secondary-content: #10131f;
+  --color-accent: #14b8a6;
+  --color-accent-content: #ffffff;
+  --color-neutral: #10131f;
   --color-neutral-content: #ffffff;
-  --color-base-100: #e8e8e8;
-  --color-base-200: #e8e8e8;
-  --color-base-300: #e8e8e8;
-  --color-base-content: #212638;
-  --color-info: #93bbfb;
-  --color-success: #34eeb6;
-  --color-warning: #ffcf72;
-  --color-error: #ff8863;
+  --color-base-100: #ffffff;
+  --color-base-200: #f6f7fc;
+  --color-base-300: #eef1f9;
+  --color-base-content: #10131f;
+  --color-info: #6366f1;
+  --color-success: #059669;
+  --color-warning: #ea9a1f;
+  --color-error: #e11d48;
 
   --radius-field: 9999rem;
   --radius-box: 1rem;
@@ -43,22 +41,22 @@
 @plugin "daisyui/theme" {
   name: "dark";
 
-  --color-primary: #212638;
+  --color-primary: #6366f1;
   --color-primary-content: #f9fbff;
-  --color-secondary: #323f61;
-  --color-secondary-content: #f9fbff;
-  --color-accent: #4969a6;
-  --color-accent-content: #f9fbff;
-  --color-neutral: #f9fbff;
-  --color-neutral-content: #385183;
-  --color-base-100: #b7791f;
-  --color-base-200: #975a16;
-  --color-base-300: #744210;
-  --color-base-content: #f9fbff;
-  --color-info: #385183;
+  --color-secondary: #10131c;
+  --color-secondary-content: #e9eef7;
+  --color-accent: #5eead4;
+  --color-accent-content: #06070a;
+  --color-neutral: #e9eef7;
+  --color-neutral-content: #06070a;
+  --color-base-100: #0b0d14;
+  --color-base-200: #06070a;
+  --color-base-300: #10131c;
+  --color-base-content: #e9eef7;
+  --color-info: #6366f1;
   --color-success: #34eeb6;
-  --color-warning: #ffcf72;
-  --color-error: #ff8863;
+  --color-warning: #f5b14c;
+  --color-error: #ff4d5e;
 
   --radius-field: 9999rem;
   --radius-box: 1rem;
@@ -138,32 +136,84 @@
 }
 
 /* ─────────────────────────────────────────────────────────────────────────
-   SEALED OBSIDIAN — CLOISTRA's design language.
+   SEALED OBSIDIAN / LUMINOUS — CLOISTRA's design language.
    A serious confidential-finance instrument that feels quietly magical.
-   The app is its own visual world (near-black obsidian) regardless of theme.
+   Two worlds share one token set: LUMINOUS (light, the default — an airy near-white
+   canvas washed with a slow aurora) and OBSIDIAN (dark, near-black). Every component
+   reads these tokens, so a single theme flip re-skins the entire corridor.
    ───────────────────────────────────────────────────────────────────────── */
-:root {
-  --ob-bg-0: #06070a;
-  --ob-bg-1: #0a0c12;
-  --ob-bg-2: #10131c;
-  --ob-line: #1b2030;
-  --ob-ink: #e7ecf5;
-  --ob-ink-dim: #9aa4b8;
-  --ob-ink-faint: #5b6479;
 
-  /* sealed / encrypted — cold aurora */
+/* LUMINOUS — the light world (default). */
+:root,
+[data-theme="light"] {
+  --ob-bg-0: #f5f6fc;
+  --ob-bg-1: #ffffff;
+  --ob-bg-2: #eef1f9;
+  --ob-line: #e4e7f2;
+  --ob-line-strong: #cdd3e6;
+  --ob-ink: #0f1220;
+  --ob-ink-dim: #545c76;
+  --ob-ink-faint: #8b93aa;
+  --ob-glass: rgba(255, 255, 255, 0.72);
+
+  /* sealed / encrypted — aurora, deepened for contrast on white */
+  --ob-seal-a: #0d9488;
+  --ob-seal-b: #4f46e5;
+  --ob-seal-c: #9333ea;
+  /* settled / released — warm signal */
+  --ob-warm-a: #ea9a1f;
+  --ob-warm-b: #f97316;
+  /* nullified — desaturated slate */
+  --ob-null: #aab2c5;
+  /* rejected — hard crimson */
+  --ob-crimson: #e11d48;
+  /* audit / lawful disclosure — authoritative green (officer view ONLY) */
+  --ob-audit: #059669;
+
+  /* aurora wash + elevation, tuned per world */
+  --ob-aurora-1: rgba(99, 102, 241, 0.16);
+  --ob-aurora-2: rgba(168, 85, 247, 0.13);
+  --ob-aurora-3: rgba(20, 184, 166, 0.13);
+  --ob-shadow: 0 30px 60px -34px rgba(37, 40, 80, 0.32);
+  --ob-card-shadow: 0 1px 2px rgba(20, 24, 55, 0.04), 0 10px 30px -20px rgba(20, 24, 55, 0.2);
+  --ob-card-hover-shadow: 0 22px 46px -26px rgba(79, 70, 229, 0.32), 0 8px 18px -12px rgba(20, 24, 55, 0.14);
+  --ob-inner-hi: 0 1px 0 rgba(255, 255, 255, 0.9) inset;
+  --ob-gate-top: rgba(255, 255, 255, 0.92);
+  --ob-gate-bot: rgba(244, 246, 252, 0.86);
+  --ob-row-line: rgba(228, 231, 242, 0.9);
+}
+
+/* OBSIDIAN — the dark world. */
+[data-theme="dark"] {
+  --ob-bg-0: #06070a;
+  --ob-bg-1: #0b0d14;
+  --ob-bg-2: #10131c;
+  --ob-line: #1c2231;
+  --ob-line-strong: #2b3550;
+  --ob-ink: #e9eef7;
+  --ob-ink-dim: #9aa4b8;
+  --ob-ink-faint: #626b80;
+  --ob-glass: rgba(16, 19, 28, 0.62);
+
   --ob-seal-a: #5eead4;
   --ob-seal-b: #6366f1;
   --ob-seal-c: #a855f7;
-  /* settled / released — warm signal */
   --ob-warm-a: #f5b14c;
   --ob-warm-b: #ff8a4c;
-  /* nullified — desaturated slate */
   --ob-null: #3a4150;
-  /* rejected — hard crimson */
   --ob-crimson: #ff4d5e;
-  /* audit / lawful disclosure — authoritative green (officer view ONLY) */
   --ob-audit: #38e8a0;
+
+  --ob-aurora-1: rgba(99, 102, 241, 0.1);
+  --ob-aurora-2: rgba(168, 85, 247, 0.08);
+  --ob-aurora-3: rgba(94, 234, 212, 0.06);
+  --ob-shadow: 0 30px 80px -44px rgba(0, 0, 0, 0.9);
+  --ob-card-shadow: 0 1px 0 rgba(255, 255, 255, 0.02) inset;
+  --ob-card-hover-shadow: 0 26px 60px -42px rgba(0, 0, 0, 0.95), 0 0 44px -22px rgba(99, 102, 241, 0.45);
+  --ob-inner-hi: 0 1px 0 rgba(255, 255, 255, 0.02) inset;
+  --ob-gate-top: rgba(16, 19, 28, 0.9);
+  --ob-gate-bot: rgba(6, 7, 10, 0.9);
+  --ob-row-line: rgba(27, 32, 48, 0.7);
 }
 
 /* Lawful disclosure — the ONE authoritative color, used only when the compliance
@@ -196,8 +246,11 @@
 .ob-gate {
   border: 1px solid var(--ob-line);
   border-radius: 16px;
-  background: linear-gradient(180deg, rgba(16, 19, 28, 0.9), rgba(6, 7, 10, 0.9));
-  transition: box-shadow 600ms cubic-bezier(0.22, 1, 0.36, 1);
+  background: linear-gradient(180deg, var(--ob-gate-top), var(--ob-gate-bot));
+  transition:
+    box-shadow 600ms cubic-bezier(0.22, 1, 0.36, 1),
+    background-color 600ms ease,
+    border-color 300ms ease;
 }
 .ob-gate-sealed {
   box-shadow:
@@ -211,12 +264,43 @@
 }
 
 .obsidian {
+  position: relative;
   background:
-    radial-gradient(1200px 700px at 50% -10%, rgba(99, 102, 241, 0.08), transparent 60%),
-    radial-gradient(900px 600px at 90% 10%, rgba(168, 85, 247, 0.06), transparent 55%), var(--ob-bg-0);
+    radial-gradient(1200px 700px at 50% -12%, var(--ob-aurora-1), transparent 60%),
+    radial-gradient(900px 620px at 88% 8%, var(--ob-aurora-2), transparent 55%),
+    radial-gradient(820px 640px at 6% 24%, var(--ob-aurora-3), transparent 55%), var(--ob-bg-0);
   color: var(--ob-ink);
   min-height: 100vh;
   font-family: "Space Grotesk", "Inter Tight", ui-sans-serif, system-ui, sans-serif;
+  transition:
+    background-color 600ms ease,
+    color 320ms ease;
+}
+
+/* Living aurora — slow-drifting light behind the whole corridor. The magic layer. */
+.ob-aurora {
+  position: fixed;
+  inset: -20vmax;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.9;
+  background:
+    radial-gradient(38vmax 30vmax at 20% 18%, var(--ob-aurora-1), transparent 62%),
+    radial-gradient(34vmax 28vmax at 82% 12%, var(--ob-aurora-2), transparent 60%),
+    radial-gradient(40vmax 32vmax at 70% 82%, var(--ob-aurora-3), transparent 62%);
+  filter: blur(12px);
+  animation: ob-aurora-drift 26s ease-in-out infinite alternate;
+}
+@keyframes ob-aurora-drift {
+  0% {
+    transform: translate3d(-2%, -1%, 0) scale(1);
+  }
+  50% {
+    transform: translate3d(2%, 2%, 0) scale(1.08);
+  }
+  100% {
+    transform: translate3d(1%, -2%, 0) scale(1.03);
+  }
 }
 
 .ob-mono {
@@ -233,7 +317,11 @@
   background: linear-gradient(180deg, var(--ob-bg-1), var(--ob-bg-0));
   border: 1px solid var(--ob-line);
   border-radius: 14px;
-  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.02) inset;
+  box-shadow: var(--ob-card-shadow);
+  transition:
+    background-color 600ms ease,
+    border-color 300ms ease,
+    box-shadow 300ms ease;
 }
 
 .ob-seal-text {
@@ -371,7 +459,7 @@
     box-shadow 400ms ease;
 }
 .ob-btn:hover:not(:disabled) {
-  border-color: #2b3550;
+  border-color: var(--ob-line-strong);
   transform: translateY(-1px);
 }
 .ob-btn:disabled {
@@ -423,4 +511,329 @@
 }
 .cloistra-input::placeholder {
   color: var(--ob-ink-faint);
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   LANDING — the CLOISTRA front door, built on the Sealed Obsidian tokens.
+   ───────────────────────────────────────────────────────────────────────── */
+
+/* Fluid, confident display heading */
+.ob-hero-title {
+  font-family: "Space Grotesk", "Inter Tight", ui-sans-serif, sans-serif;
+  font-weight: 700;
+  font-size: clamp(2.5rem, 5.6vw, 4.75rem);
+  line-height: 1.02;
+  letter-spacing: -0.035em;
+  color: var(--ob-ink);
+  text-wrap: balance;
+}
+.ob-hero-sub {
+  font-size: clamp(1.02rem, 1.5vw, 1.2rem);
+  line-height: 1.62;
+  color: var(--ob-ink-dim);
+  max-width: 34rem;
+}
+
+/* Eyebrow / kicker with a live dot */
+.ob-kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.32rem 0.75rem;
+  border-radius: 999px;
+  border: 1px solid var(--ob-line);
+  background: rgba(99, 102, 241, 0.06);
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.01em;
+  color: var(--ob-ink-dim);
+}
+.ob-kicker-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 999px;
+  background: var(--ob-audit);
+  box-shadow: 0 0 10px var(--ob-audit);
+  animation: ob-live 2.4s ease-in-out infinite;
+}
+@keyframes ob-live {
+  0%,
+  100% {
+    opacity: 0.5;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+/* Faint engineering grid behind the hero, masked to fade out */
+.ob-grid-veil {
+  position: relative;
+}
+.ob-grid-veil::before {
+  content: "";
+  position: absolute;
+  inset: -2rem -2rem auto -2rem;
+  height: 46rem;
+  pointer-events: none;
+  z-index: 0;
+  background-image:
+    linear-gradient(var(--ob-line) 1px, transparent 1px), linear-gradient(90deg, var(--ob-line) 1px, transparent 1px);
+  background-size: 46px 46px;
+  -webkit-mask-image: radial-gradient(120% 70% at 50% 0%, #000 20%, transparent 72%);
+  mask-image: radial-gradient(120% 70% at 50% 0%, #000 20%, transparent 72%);
+  opacity: 0.45;
+}
+
+/* The hero "sealed mandate" panel — the product made tangible */
+.ob-panel {
+  position: relative;
+  border: 1px solid var(--ob-line);
+  border-radius: 18px;
+  background:
+    radial-gradient(120% 80% at 100% 0%, var(--ob-aurora-1), transparent 55%),
+    radial-gradient(120% 90% at 0% 100%, var(--ob-aurora-3), transparent 60%),
+    linear-gradient(180deg, var(--ob-bg-1), var(--ob-bg-0));
+  box-shadow: var(--ob-shadow), var(--ob-inner-hi);
+  overflow: hidden;
+  transition:
+    background-color 600ms ease,
+    border-color 300ms ease,
+    box-shadow 300ms ease;
+}
+.ob-panel::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--ob-seal-a), var(--ob-seal-c), transparent);
+  opacity: 0.55;
+}
+.ob-panel-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.85rem 0;
+  border-bottom: 1px solid var(--ob-row-line);
+}
+.ob-panel-row:last-child {
+  border-bottom: none;
+}
+.ob-panel-key {
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.03em;
+  color: var(--ob-ink-dim);
+  text-transform: uppercase;
+}
+
+/* Labeled hairline divider */
+.ob-rule-label {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 0.66rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--ob-ink-faint);
+}
+.ob-rule-label::before,
+.ob-rule-label::after {
+  content: "";
+  height: 1px;
+  flex: 1;
+  background: var(--ob-line);
+}
+
+/* Stat + section labels */
+.ob-stat-n {
+  font-family: "Space Grotesk", sans-serif;
+  font-weight: 600;
+  font-size: 1.4rem;
+  color: var(--ob-ink);
+  letter-spacing: -0.02em;
+}
+.ob-stat-l {
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 0.66rem;
+  letter-spacing: 0.05em;
+  color: var(--ob-ink-faint);
+  text-transform: uppercase;
+}
+.ob-section-eyebrow {
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--ob-ink-faint);
+}
+
+/* How-it-works step marker */
+.ob-step-num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.1rem;
+  height: 2.1rem;
+  border-radius: 999px;
+  border: 1px solid var(--ob-line);
+  background: var(--ob-bg-2);
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 0.8rem;
+  color: var(--ob-seal-a);
+  box-shadow: 0 0 0 4px rgba(94, 234, 212, 0.04);
+}
+
+/* Card that lifts on hover */
+.ob-card-link {
+  transition:
+    transform 420ms cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 420ms ease,
+    box-shadow 420ms ease;
+}
+.ob-card-link:hover {
+  transform: translateY(-3px);
+  border-color: var(--ob-line-strong);
+  box-shadow: var(--ob-card-hover-shadow);
+}
+
+/* Reveal-on-scroll — sections rise and resolve into focus as you reach them. */
+.ob-rise {
+  opacity: 0;
+  transform: translateY(22px);
+  transition:
+    opacity 720ms cubic-bezier(0.22, 1, 0.36, 1),
+    transform 720ms cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: opacity, transform;
+}
+.ob-rise.ob-rise-in {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Gentle levitation for the hero mandate — it hovers, sealed and weightless. */
+.ob-float {
+  animation: ob-float 9s ease-in-out infinite;
+}
+@keyframes ob-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-9px);
+  }
+}
+
+/* Soft aurora bloom placed behind the hero mandate. */
+.ob-bloom {
+  position: absolute;
+  inset: -12% -8% -18% -8%;
+  z-index: 0;
+  pointer-events: none;
+  border-radius: 40px;
+  background:
+    radial-gradient(60% 55% at 70% 30%, var(--ob-aurora-2), transparent 70%),
+    radial-gradient(55% 60% at 30% 70%, var(--ob-aurora-3), transparent 70%);
+  filter: blur(28px);
+  opacity: 0.9;
+}
+
+/* A slow specular sweep across the hero display — light catching a sealed surface. */
+.ob-shine {
+  position: relative;
+  background: linear-gradient(115deg, var(--ob-seal-a), var(--ob-seal-b) 42%, var(--ob-seal-c) 72%, var(--ob-seal-a));
+  background-size: 220% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: ob-shine-move 7s ease-in-out infinite;
+}
+@keyframes ob-shine-move {
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+/* Theme toggle — a small sun/moon capsule. */
+.ob-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.35rem;
+  height: 2.35rem;
+  border-radius: 999px;
+  border: 1px solid var(--ob-line);
+  background: var(--ob-glass);
+  color: var(--ob-ink-dim);
+  cursor: pointer;
+  backdrop-filter: blur(8px);
+  transition:
+    color 300ms ease,
+    border-color 300ms ease,
+    transform 300ms cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 300ms ease;
+}
+.ob-toggle:hover {
+  color: var(--ob-seal-b);
+  border-color: var(--ob-line-strong);
+  transform: translateY(-1px) rotate(-8deg);
+  box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.08);
+}
+
+/* Brand seal mark — a small aurora tile carrying the ◈ sigil. */
+.ob-seal-mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.15rem;
+  height: 2.15rem;
+  border-radius: 11px;
+  border: 1px solid var(--ob-line);
+  background:
+    radial-gradient(120% 120% at 20% 10%, rgba(99, 102, 241, 0.16), transparent 60%),
+    linear-gradient(180deg, var(--ob-bg-1), var(--ob-bg-2));
+  box-shadow: var(--ob-card-shadow);
+  transition:
+    transform 400ms cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 400ms ease;
+}
+.group:hover .ob-seal-mark {
+  transform: translateY(-1px) rotate(45deg);
+  box-shadow: 0 0 24px -6px rgba(99, 102, 241, 0.45);
+}
+.ob-seal-mark-glyph {
+  font-size: 1.05rem;
+  line-height: 1;
+  background: linear-gradient(135deg, var(--ob-seal-a), var(--ob-seal-b), var(--ob-seal-c));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  transition: transform 400ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+.group:hover .ob-seal-mark-glyph {
+  transform: rotate(-45deg);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ob-kicker-dot,
+  .ob-cipher,
+  .ob-considering::after,
+  .ob-aurora,
+  .ob-shine {
+    animation: none;
+  }
+  .ob-rise {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
 }

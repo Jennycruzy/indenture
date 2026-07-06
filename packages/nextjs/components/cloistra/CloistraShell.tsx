@@ -4,6 +4,7 @@ import Link from "next/link";
 import { CorridorBar } from "~~/components/cloistra/CorridorBar";
 import { RoleTabs } from "~~/components/cloistra/RoleTabs";
 import { ScoutToggle } from "~~/components/cloistra/ScoutToggle";
+import { ThemeToggle } from "~~/components/cloistra/ThemeToggle";
 import { useCloistraStore } from "~~/hooks/cloistra/store";
 
 /** The common frame for every CLOISTRA view: the obsidian world, the brand, role tabs, the
@@ -19,17 +20,26 @@ export function CloistraShell({
 
   return (
     <div className={`obsidian w-full ${scout ? "ob-scout" : ""}`}>
-      <div className="max-w-6xl mx-auto px-4 md:px-6 py-6 space-y-5">
+      <div className="ob-aurora" aria-hidden />
+      <div className="relative z-[1] max-w-6xl mx-auto px-4 md:px-6 py-6 space-y-5">
         <header className="flex flex-wrap items-center justify-between gap-3">
-          <Link href="/" className="flex items-baseline gap-3 no-underline">
-            <span className="ob-display text-2xl font-bold tracking-tight" style={{ color: "var(--ob-ink)" }}>
-              CLOISTRA
+          <Link href="/" className="group flex items-center gap-3 no-underline">
+            <span className="ob-seal-mark" aria-hidden>
+              <span className="ob-seal-mark-glyph">◈</span>
             </span>
-            <span className="text-xs" style={{ color: "var(--ob-ink-dim)" }}>
-              the sealed compliance corridor
+            <span className="flex items-baseline gap-3">
+              <span className="ob-display text-2xl font-bold tracking-tight" style={{ color: "var(--ob-ink)" }}>
+                CLOISTRA
+              </span>
+              <span className="hidden sm:inline text-xs" style={{ color: "var(--ob-ink-dim)" }}>
+                the sealed compliance corridor
+              </span>
             </span>
           </Link>
-          <ScoutToggle />
+          <div className="flex items-center gap-2.5">
+            <ScoutToggle />
+            <ThemeToggle />
+          </div>
         </header>
 
         <RoleTabs />

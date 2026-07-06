@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="CLOISTRA sealed corridor">
+  <defs>
+    <linearGradient id="seal" x1="8" y1="8" x2="56" y2="56" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#5eead4" />
+      <stop offset="0.5" stop-color="#6366f1" />
+      <stop offset="1" stop-color="#a855f7" />
+    </linearGradient>
+  </defs>
+  <!-- obsidian tile: reads on both light and dark browser tabs -->
+  <rect width="64" height="64" rx="16" fill="#0b0d14" />
+  <rect x="1.25" y="1.25" width="61.5" height="61.5" rx="14.75" fill="none" stroke="url(#seal)" stroke-width="1.5" opacity="0.45" />
+  <!-- the sealed mandate: an aurora diamond -->
+  <path d="M32 11 L53 32 L32 53 L11 32 Z" fill="none" stroke="url(#seal)" stroke-width="3.4" stroke-linejoin="round" />
+  <path d="M32 21 L43 32 L32 43 L21 32 Z" fill="url(#seal)" />
+  <!-- keyhole: private, decryptable only by the officer -->
+  <circle cx="32" cy="30" r="3" fill="#0b0d14" />
+  <rect x="30.7" y="30.5" width="2.6" height="6.5" rx="1.3" fill="#0b0d14" />
+</svg>

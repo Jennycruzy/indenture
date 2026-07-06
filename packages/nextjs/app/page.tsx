@@ -3,139 +3,237 @@
 import Link from "next/link";
 import { CipherGlyphs } from "~~/components/cloistra/CipherGlyphs";
 import { CloistraShell } from "~~/components/cloistra/CloistraShell";
+import { Reveal } from "~~/components/cloistra/Reveal";
+import { SealedMandateCard } from "~~/components/cloistra/SealedMandateCard";
+
+const stats = [
+  { n: "FHEVM", l: "Zama · Sepolia" },
+  { n: "ERC-7984", l: "confidential token" },
+  { n: "3 rules", l: "one sealed predicate" },
+  { n: "officer-only", l: "lawful decryption" },
+];
+
+const steps = [
+  {
+    n: "1",
+    t: "Encrypt",
+    b: "The sender encrypts the amount in the browser. The FHE key never touches the client.",
+  },
+  {
+    n: "2",
+    t: "Adjudicate",
+    b: "The corridor checks it against the sealed rulebook — cap, screening, velocity — homomorphically.",
+  },
+  {
+    n: "3",
+    t: "Settle",
+    b: "A single FHE.select yields the moved amount or an encrypted zero. The outcome is sealed, even to the sender.",
+  },
+  {
+    n: "4",
+    t: "Audit",
+    b: "Only the compliance officer can decrypt a flagged transfer, via EIP-712 — private to the world, accountable to the regulator.",
+  },
+];
 
 const rules = [
   {
     n: "01",
-    title: "Sealed per-transfer cap",
-    body: "The maximum a single transfer may move — held as ciphertext, checked homomorphically.",
+    title: "Per-transfer cap",
+    body: "The most a single transfer may move — held as ciphertext, compared homomorphically.",
   },
   {
     n: "02",
-    title: "Sealed recipient screening",
-    body: "Allow / deny per recipient, default-deny. The address is public; whether they pass is sealed.",
+    title: "Recipient screening",
+    body: "Allow / deny per recipient, default-deny. The address is public; whether it passes is sealed.",
   },
   {
     n: "03",
-    title: "Sealed velocity ceiling",
-    body: "A per-sender encrypted running total that accumulates across transfers and resets on a public window — no decryption, no division.",
+    title: "Velocity ceiling",
+    body: "A per-sender encrypted running total that accumulates across transfers and resets on a public window.",
   },
 ];
 
 const consoles = [
   {
     href: "/operator",
-    title: "Operator console",
-    body: "Seal and rotate the policy — cap, screening, and velocity ceiling. You commit it; you can never read it.",
+    title: "Operator",
+    body: "Seal and rotate the policy — cap, screening, velocity ceiling. You commit it; you can never read it back.",
+    glyph: "◈",
   },
   {
     href: "/sender",
-    title: "Sender corridor",
-    body: "Submit a cross-border transfer. Watch it adjudicate against a rulebook you cannot see.",
+    title: "Sender",
+    body: "Submit a cross-border transfer and watch it adjudicate against a rulebook you cannot see.",
+    glyph: "⟢",
   },
   {
     href: "/officer",
-    title: "Compliance audit",
+    title: "Compliance officer",
     body: "The one role that can decrypt a flagged transfer — via EIP-712, on the record.",
+    glyph: "❖",
   },
 ];
 
 export default function Home() {
   return (
     <CloistraShell showCorridorBar={false}>
-      {/* Hero */}
-      <section className="ob-card p-8 md:p-10">
-        <div className="ob-chip mb-5">a category of its own</div>
-        <h1 className="ob-display text-3xl md:text-5xl font-bold leading-tight" style={{ color: "var(--ob-ink)" }}>
-          Everyone else encrypts the payment
-          <br />
-          and <span className="ob-seal-text">publishes the rules</span>.
-        </h1>
-        <p className="ob-display text-2xl md:text-3xl font-semibold mt-3">
-          CLOISTRA seals the <span className="ob-warm-text">rules</span>.
-        </p>
-        <p className="mt-5 max-w-2xl text-base md:text-lg" style={{ color: "var(--ob-ink-dim)" }}>
-          The cap, the screening list, and the velocity ceiling are all ciphertext. Every transfer is still checked
-          against them — but no one can read where the compliance line sits. Not the sender, not a bad actor probing it,
-          not a competitor, not the operator. Only a designated compliance officer can decrypt a specific flagged
-          transfer to audit it.
-        </p>
-        <div className="flex flex-wrap gap-3 mt-7">
-          <Link href="/sender" className="ob-btn ob-btn-warm no-underline">
-            Enter the corridor →
-          </Link>
-          <Link href="/operator" className="ob-btn ob-btn-seal no-underline">
-            Seal a policy
-          </Link>
-          <Link href="/officer" className="ob-btn no-underline">
-            Audit a transfer
-          </Link>
+      {/* ── Hero ─────────────────────────────────────────────────────────── */}
+      <section className="ob-grid-veil relative pt-4 md:pt-12 pb-6">
+        <div className="relative z-10 grid lg:grid-cols-[1.05fr_0.95fr] gap-10 lg:gap-12 items-center">
+          <Reveal>
+            <span className="ob-kicker">
+              <span className="ob-kicker-dot" /> Live on Sepolia · FHEVM
+            </span>
+            <h1 className="ob-hero-title mt-5">
+              Seal the <span className="ob-shine">rules</span>,
+              <br />
+              not just the amount.
+            </h1>
+            <p className="ob-hero-sub mt-5">
+              Everyone else encrypts the payment and publishes the policy. CLOISTRA encrypts the{" "}
+              <span style={{ color: "var(--ob-ink)" }}>policy itself</span> — the cap, the recipient screening, the
+              velocity ceiling — and still enforces every one on-chain. No sender, observer, competitor, or operator can
+              read where the compliance line sits.
+            </p>
+            <div className="flex flex-wrap gap-3 mt-7">
+              <Link href="/sender" className="ob-btn ob-btn-warm no-underline">
+                Enter the corridor →
+              </Link>
+              <Link href="#how" className="ob-btn ob-btn-seal no-underline">
+                How it works
+              </Link>
+            </div>
+            <div className="flex flex-wrap gap-x-9 gap-y-4 mt-9">
+              {stats.map(s => (
+                <div key={s.l}>
+                  <div className="ob-stat-n">{s.n}</div>
+                  <div className="ob-stat-l mt-1">{s.l}</div>
+                </div>
+              ))}
+            </div>
+          </Reveal>
+
+          <Reveal delay={140} className="relative">
+            <div className="ob-bloom" aria-hidden />
+            <div className="relative ob-float">
+              <SealedMandateCard />
+            </div>
+          </Reveal>
         </div>
       </section>
 
-      {/* The three sealed rules */}
-      <section>
-        <h2 className="ob-mono text-[0.72rem] uppercase tracking-widest mb-3" style={{ color: "var(--ob-ink-dim)" }}>
-          one predicate · three sealed rules
-        </h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {rules.map(r => (
-            <div key={r.n} className="ob-card p-5">
-              <div className="flex items-center justify-between mb-3">
+      {/* ── How it works ─────────────────────────────────────────────────── */}
+      <section id="how" className="scroll-mt-6 pt-8">
+        <Reveal>
+          <div className="ob-section-eyebrow mb-2">how it works</div>
+          <h2 className="ob-display text-2xl md:text-[2rem] font-semibold mb-7" style={{ color: "var(--ob-ink)" }}>
+            A transfer crosses in four moves.
+          </h2>
+        </Reveal>
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+          {steps.map((s, i) => (
+            <Reveal key={s.n} delay={i * 90} className="ob-card p-5">
+              <div className="ob-step-num mb-4">{s.n}</div>
+              <div className="ob-display font-semibold text-lg mb-1.5" style={{ color: "var(--ob-ink)" }}>
+                {s.t}
+              </div>
+              <p className="text-sm leading-relaxed" style={{ color: "var(--ob-ink-dim)" }}>
+                {s.b}
+              </p>
+            </Reveal>
+          ))}
+        </div>
+      </section>
+
+      {/* ── The three sealed rules ───────────────────────────────────────── */}
+      <section className="pt-10">
+        <Reveal>
+          <div className="ob-section-eyebrow mb-2">one predicate · three sealed rules</div>
+          <h2 className="ob-display text-2xl md:text-[2rem] font-semibold mb-7" style={{ color: "var(--ob-ink)" }}>
+            Checked against thresholds no one can read.
+          </h2>
+        </Reveal>
+        <div className="grid gap-4 md:grid-cols-3">
+          {rules.map((r, i) => (
+            <Reveal key={r.n} delay={i * 90} className="ob-card p-5">
+              <div className="flex items-center justify-between mb-4">
                 <span className="ob-mono text-sm" style={{ color: "var(--ob-ink-faint)" }}>
                   {r.n}
                 </span>
                 <CipherGlyphs seed={`${r.n}-${r.title}`} length={12} />
               </div>
-              <div className="ob-display font-semibold text-lg mb-1" style={{ color: "var(--ob-ink)" }}>
+              <div className="ob-display font-semibold text-lg mb-1.5" style={{ color: "var(--ob-ink)" }}>
                 {r.title}
               </div>
-              <p className="text-sm" style={{ color: "var(--ob-ink-dim)" }}>
+              <p className="text-sm leading-relaxed" style={{ color: "var(--ob-ink-dim)" }}>
                 {r.body}
               </p>
-            </div>
+            </Reveal>
           ))}
         </div>
-        <p className="text-sm mt-3" style={{ color: "var(--ob-ink-faint)" }}>
-          A breach nullifies the transfer to zero via a single <span className="ob-mono">FHE.select</span> — and reveals
-          which rule caught it to no one, because the chain can&rsquo;t. That is the anti-scouting property.
-        </p>
+        <Reveal>
+          <p className="text-sm mt-4 max-w-3xl" style={{ color: "var(--ob-ink-faint)" }}>
+            A breach nullifies the transfer to zero through a single <span className="ob-mono">FHE.select</span> — and
+            reveals which rule caught it to no one, because the chain can&rsquo;t.
+          </p>
+        </Reveal>
       </section>
 
-      {/* Consoles */}
-      <section>
-        <h2 className="ob-mono text-[0.72rem] uppercase tracking-widest mb-3" style={{ color: "var(--ob-ink-dim)" }}>
-          three roles
-        </h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {consoles.map(c => (
-            <Link
-              key={c.href}
-              href={c.href}
-              className="ob-card p-5 no-underline transition-transform hover:-translate-y-0.5"
-            >
-              <div className="ob-display font-semibold text-lg mb-1" style={{ color: "var(--ob-ink)" }}>
-                {c.title}
-              </div>
-              <p className="text-sm" style={{ color: "var(--ob-ink-dim)" }}>
-                {c.body}
-              </p>
-              <span className="ob-seal-text ob-mono text-xs mt-3 inline-block">open →</span>
-            </Link>
+      {/* ── Why it matters ───────────────────────────────────────────────── */}
+      <Reveal as="section" className="ob-panel p-7 md:p-10 mt-10">
+        <div className="relative z-10 max-w-3xl">
+          <div className="ob-section-eyebrow mb-3">the anti-scouting property</div>
+          <h2 className="ob-display text-2xl md:text-4xl font-bold leading-tight" style={{ color: "var(--ob-ink)" }}>
+            A line you can&rsquo;t see is a line you can&rsquo;t <span className="ob-warm-text">structure around</span>.
+          </h2>
+          <p className="mt-5 text-base md:text-lg leading-relaxed" style={{ color: "var(--ob-ink-dim)" }}>
+            Publish your compliance thresholds and sophisticated actors probe them — splitting transfers just under the
+            cap, routing around the screening list, pacing beneath the velocity ceiling. CLOISTRA keeps the boundary in
+            ciphertext. Every transfer is still checked; none of them reveal where the edge is — not even which rule
+            nullified a blocked one.
+          </p>
+        </div>
+      </Reveal>
+
+      {/* ── The three roles ──────────────────────────────────────────────── */}
+      <section className="pt-10">
+        <Reveal>
+          <div className="ob-section-eyebrow mb-2">three roles</div>
+          <h2 className="ob-display text-2xl md:text-[2rem] font-semibold mb-7" style={{ color: "var(--ob-ink)" }}>
+            Take a seat at the corridor.
+          </h2>
+        </Reveal>
+        <div className="grid gap-4 md:grid-cols-3">
+          {consoles.map((c, i) => (
+            <Reveal key={c.href} delay={i * 90}>
+              <Link href={c.href} className="ob-card ob-card-link p-6 no-underline flex flex-col h-full">
+                <div className="ob-display text-2xl mb-3" style={{ color: "var(--ob-seal-b)" }} aria-hidden>
+                  {c.glyph}
+                </div>
+                <div className="ob-display font-semibold text-lg mb-1.5" style={{ color: "var(--ob-ink)" }}>
+                  {c.title}
+                </div>
+                <p className="text-sm leading-relaxed flex-1" style={{ color: "var(--ob-ink-dim)" }}>
+                  {c.body}
+                </p>
+                <span className="ob-seal-text ob-mono text-xs mt-4 inline-block">open console →</span>
+              </Link>
+            </Reveal>
           ))}
         </div>
       </section>
 
-      {/* Honesty footer */}
-      <section className="ob-card p-5">
-        <p className="text-sm" style={{ color: "var(--ob-ink-dim)" }}>
+      {/* ── Honest bounds ────────────────────────────────────────────────── */}
+      <Reveal as="footer" className="ob-card p-5 mt-10">
+        <p className="text-sm leading-relaxed" style={{ color: "var(--ob-ink-dim)" }}>
           <span className="ob-mono ob-audit-text">honest bounds:</span> the confidential transfer and the sealed
-          compliance policy are real on Sepolia via the FHEVM coprocessor / KMS / relayer. Local tests use Zama&rsquo;s
-          cleartext harness. The optional naira off-ramp is a licensed provider&rsquo;s <strong>sandbox</strong> payout
-          proving the integration — not production money movement. The engine identifier stays{" "}
-          <span className="ob-mono">Cloistra</span>; CLOISTRA is the product face.
+          compliance policy are real on Sepolia via the FHEVM coprocessor, KMS, and relayer. Local tests use
+          Zama&rsquo;s cleartext harness. The optional naira off-ramp is a licensed provider&rsquo;s{" "}
+          <strong style={{ color: "var(--ob-ink)" }}>sandbox</strong> payout proving the integration — not production
+          money movement.
         </p>
-      </section>
+      </Reveal>
     </CloistraShell>
   );
 }
