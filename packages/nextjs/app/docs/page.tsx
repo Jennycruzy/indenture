@@ -399,12 +399,12 @@ export default function Docs() {
               "Corridor",
               <a
                 key="c"
-                href="https://sepolia.etherscan.io/address/0x4A3c965edb96f74451fe5921686e44CbFF4a8A7b"
+                href="https://sepolia.etherscan.io/address/0xD77489caCa9C6549CCeD4A500B46019BE2d225c4"
                 target="_blank"
                 rel="noreferrer"
                 className="ob-mono text-xs"
               >
-                0x4A3c965edb96f74451fe5921686e44CbFF4a8A7b
+                0xD77489caCa9C6549CCeD4A500B46019BE2d225c4
               </a>,
             ],
           ]}

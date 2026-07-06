@@ -22,15 +22,15 @@ const FHE_GAS = 15_000_000n;
 
 const ENGINE = "0xF34694B35841ceA17acc9Fb86D2b5bd3Ac276Eee";
 const TOKEN = "0x397ce46754a83f9c903c8e53AE9075Bd6D4d67a2";
-const CORRIDOR = "0x4A3c965edb96f74451fe5921686e44CbFF4a8A7b";
-const MANDATE_ID = "0x3d22c2c7a148f039136b47757e1eb1f365e6506be096709b10249e9c286967b0";
+const CORRIDOR = "0xD77489caCa9C6549CCeD4A500B46019BE2d225c4";
+const MANDATE_ID = "0x4ab98a4eba409938ffa21845d4f1c7c6f2c5cc1237c82f6088bfb25858e89d0d";
 
 const DEFAULTS = {
   perTradeCap: 100n,
-  totalCap: 1_000n,
+  totalCap: 100_000n,
   drawdownPct: 80n,
-  custody: 500n,
-  velocityCeiling: 300n,
+  custody: 10_000n,
+  velocityCeiling: 1_000_000n,
   senderTransfer: 80n,
   senderEth: parseEther("0.005"),
   recipient: "0x0000000000000000000000000000000000000001",

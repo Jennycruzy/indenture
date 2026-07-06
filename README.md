@@ -65,7 +65,7 @@ The current Cloistra deployment on Sepolia:
 | `Cloistra` engine       | `0xF34694B35841ceA17acc9Fb86D2b5bd3Ac276Eee` |
 | `DemoConfidentialToken` | `0x397ce46754a83f9c903c8e53AE9075Bd6D4d67a2` |
 | `ConfidentialFeed`      | `0xe9f2C4c32D80bc8Bed243Da4D05bE90b478777A6` |
-| `Corridor`              | `0x4A3c965edb96f74451fe5921686e44CbFF4a8A7b` |
+| `Corridor`              | `0xD77489caCa9C6549CCeD4A500B46019BE2d225c4` |
 
 Deployment blocks, transaction links, gas usage, and verification status are tracked in [DEPLOYMENTS.md](DEPLOYMENTS.md).
 
@@ -241,8 +241,8 @@ The hosted frontend only needs public browser configuration:
 ```text
 NEXT_PUBLIC_ALCHEMY_API_KEY=<Alchemy Sepolia API key>
 NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID=<WalletConnect project id>
-NEXT_PUBLIC_CORRIDOR_ADDRESS=0x4A3c965edb96f74451fe5921686e44CbFF4a8A7b
-NEXT_PUBLIC_CLOISTRA_DEPLOY_BLOCK=11210843
+NEXT_PUBLIC_CORRIDOR_ADDRESS=0xD77489caCa9C6549CCeD4A500B46019BE2d225c4
+NEXT_PUBLIC_CLOISTRA_DEPLOY_BLOCK=11217667
 ```
 
 Do not put off-ramp secrets in Vercel. `OFFICER_PRIVATE_KEY`, `FLW_SECRET_KEY`, `SEPOLIA_RPC_URL`, `BENEFICIARIES_JSON`, and related listener env vars belong only on the VPS.

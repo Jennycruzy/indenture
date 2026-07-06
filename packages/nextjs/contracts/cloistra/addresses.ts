@@ -18,12 +18,12 @@ export const CLOISTRA_ADDRESSES: Partial<
     engine: "0xF34694B35841ceA17acc9Fb86D2b5bd3Ac276Eee",
     token: "0x397ce46754a83f9c903c8e53AE9075Bd6D4d67a2",
     feed: "0xe9f2C4c32D80bc8Bed243Da4D05bE90b478777A6",
-    corridor: "0x4A3c965edb96f74451fe5921686e44CbFF4a8A7b",
+    corridor: "0xD77489caCa9C6549CCeD4A500B46019BE2d225c4",
   },
 };
 
 /** Block the fresh CLOISTRA engine was deployed at — a floor for event queries. */
-export const ENGINE_DEPLOY_BLOCK = BigInt(process.env.NEXT_PUBLIC_CLOISTRA_DEPLOY_BLOCK ?? "11210843");
+export const ENGINE_DEPLOY_BLOCK = BigInt(process.env.NEXT_PUBLIC_CLOISTRA_DEPLOY_BLOCK ?? "11217667");
 
 /**
  * The CLOISTRA Corridor is deployed per mandate. `NEXT_PUBLIC_CORRIDOR_ADDRESS`
