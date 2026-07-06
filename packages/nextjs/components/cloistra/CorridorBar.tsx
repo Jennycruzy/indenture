@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { usePathname } from "next/navigation";
 import { isAddress } from "viem";
 import type { Address } from "viem";
 import { useCloistraStore } from "~~/hooks/cloistra/store";
@@ -19,10 +20,15 @@ const roleChip: Record<string, { label: string; cls?: string }> = {
  *  role, and a picker to change corridors. The address is the only thing persisted; every
  *  role is read from chain. */
 export function CorridorBar() {
-  const { address, configured, operator, complianceOfficer, ceilingSet, role, isLoading } = useCorridor();
+  const { address, configured, operator, complianceOfficer, ceilingSet, isLoading } = useCorridor();
+  const pathname = usePathname();
   const setActive = useCloistraStore(s => s.setActive);
   const [draft, setDraft] = useState("");
   const [editing, setEditing] = useState(false);
+
+  // Label the bar by the console you're viewing, not the connected wallet — so the chip and the
+  // active tab always agree. Each page separately checks whether your wallet holds the role.
+  const consoleRole = pathname === "/operator" ? "operator" : pathname === "/officer" ? "officer" : "sender";
 
   const apply = () => {
     if (isAddress(draft)) {
@@ -32,7 +38,7 @@ export function CorridorBar() {
     }
   };
 
-  const chip = roleChip[role];
+  const chip = roleChip[consoleRole];
 
   return (
     <div className="ob-card p-3 flex flex-wrap items-center gap-3 justify-between">
