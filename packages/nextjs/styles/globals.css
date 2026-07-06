@@ -567,10 +567,10 @@
 }
 
 /* Faint engineering grid behind the hero, masked to fade out */
-.ob-grid-veil {
+.ob-grid-mesh {
   position: relative;
 }
-.ob-grid-veil::before {
+.ob-grid-mesh::before {
   content: "";
   position: absolute;
   inset: -2rem -2rem auto -2rem;

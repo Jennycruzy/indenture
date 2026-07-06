@@ -17,7 +17,7 @@ const steps = [
   {
     n: "1",
     t: "Encrypt",
-    b: "The sender encrypts the amount in the browser. The FHE key never touches the client.",
+    b: "The sender encrypts the amount in the browser. No decryption key exists client-side — decryption lives with the FHEVM threshold KMS.",
   },
   {
     n: "2",
@@ -79,7 +79,7 @@ export default function Home() {
   return (
     <CloistraShell showCorridorBar={false}>
       {/* ── Hero ─────────────────────────────────────────────────────────── */}
-      <section className="ob-grid-veil relative pt-4 md:pt-12 pb-6">
+      <section className="ob-grid-mesh relative pt-4 md:pt-12 pb-6">
         <div className="relative z-10 grid lg:grid-cols-[1.05fr_0.95fr] gap-10 lg:gap-12 items-center">
           <Reveal>
             <span className="ob-kicker">

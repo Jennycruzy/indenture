@@ -16,7 +16,7 @@ cd "$REPO_ROOT"
 echo "== CLOISTRA gate: old-name scan =="
 if grep -RIn -E "$OLD_TITLE|$OLD_UPPER|$OLD_LOWER|$OLD_BRAND_TITLE|$OLD_BRAND_UPPER|$OLD_BRAND_LOWER" \
   --exclude=pnpm-lock.yaml \
-  --exclude=next-dev.log \
+  --exclude=*.log \
   --exclude-dir=.git \
   --exclude-dir=node_modules \
   --exclude-dir=.next \

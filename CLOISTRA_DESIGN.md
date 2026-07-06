@@ -1,10 +1,10 @@
 # CLOISTRA_DESIGN.md — sealing the compliance rulebook
 
 > **CLOISTRA** is the product face; **`Cloistra` / `Cloistra.sol`** stay the internal engine names
-> (the repo, deploy scripts, and verified Sepolia addresses depend on them). This document locks the
-> design _before_ code: the role re-cast, the three sealed rules incl. the net-new encrypted velocity
-> accumulator, and the compliance-officer disclosure model. No mechanism here contradicts what is
-> already verified in `VERIFICATION.md`.
+> (the repo, deploy scripts, and verified Sepolia addresses depend on them). This document records the
+> design rationale: the role re-cast, the three sealed rules incl. the encrypted velocity accumulator,
+> and the compliance-officer disclosure model. Everything here is implemented and exercised by the
+> gate in `VERIFICATION.md`.
 
 ---
 
@@ -126,7 +126,7 @@ It delegates to the same internal `_settle` (the single fund-out path is preserv
 `FHE.allowTransient(moved, msg.sender)` so the calling consumer can chain `moved` into its own encrypted
 accounting **in the same tx, without decrypting it**.
 
-**Safety argument (Law 4 — this does not weaken any guarantee):**
+**Safety argument — this does not weaken any guarantee:**
 
 - `moved ∈ {0, amount}`. Granting the agent _compute_ rights on it does **not** grant _decrypt_ rights:
   user-decryption (EIP-712) requires a granted **EOA** as well, and none is given here. The consumer is a
@@ -136,23 +136,23 @@ accounting **in the same tx, without decrypting it**.
   ceiling). The blind-agent-over-policy guarantee is untouched.
 - No cleartext is emitted; `moved` is an opaque handle. The leak-audit guarantee is untouched.
 
-`settle` and `settleWithCondition` keep their exact signatures, so the 28 existing tests are unaffected.
+`settle` and `settleWithCondition` keep their exact signatures, so the engine's pre-existing tests are unaffected.
 
 ---
 
 ## 5. Compliance-officer disclosure model
 
-**Requirement (Phase B step 3):** move audit-decrypt from the operator to the compliance officer; the
-operator and sender must NOT be able to decrypt the sealed policy at runtime.
+**Requirement:** audit-decrypt belongs to the compliance officer, not the operator; the operator and
+sender must NOT be able to decrypt the sealed policy at runtime.
 
 **Mechanism — a backward-compatible `complianceOfficer` on the mandate:**
 
-- `Mandate` gains `address complianceOfficer`.
+- `Mandate` carries `address complianceOfficer`.
 - The legacy `commitMandate(...)` sets `complianceOfficer = msg.sender` (the principal). Every audit grant
-  in the engine (`fund`, `setPayeeAllowed`, `_settle`) is switched from `msg.sender`/`m.principal` to
-  `m.complianceOfficer`. For legacy mandates `complianceOfficer == principal`, so the grants are
-  **identical** and the 28 existing tests pass unchanged.
-- A new `commitMandateFor(..., address complianceOfficer)` sets a _distinct_ officer. For a CLOISTRA corridor
+  in the engine (`fund`, `setPayeeAllowed`, `_settle`) targets `m.complianceOfficer`. For legacy mandates
+  `complianceOfficer == principal`, so the grants are **identical** and the pre-existing engine tests pass
+  unchanged.
+- `commitMandateFor(..., address complianceOfficer)` sets a _distinct_ officer. For a CLOISTRA corridor
   the operator commits with `complianceOfficer = <officer address>`; the operator (principal) is then
   granted **no** decrypt rights — it can commit, fund, screen, and rotate (all compute-only via
   `allowThis`, which the engine holds), but it cannot read the sealed policy or the flagged outcomes.
@@ -187,13 +187,13 @@ _compliance_, not just secrecy.
 
 ---
 
-## 7. Deliverable map (this design → code)
+## 7. Design → code map
 
-| Design element                                                         | File                                               |
-| ---------------------------------------------------------------------- | -------------------------------------------------- |
-| `complianceOfficer` + `commitMandateFor` + `settleCorridor` (additive) | `packages/foundry/src/Cloistra.sol`                |
-| velocity accumulator, three-rule predicate, officer grants             | `packages/foundry/src/orders/Corridor.sol` (new)   |
-| cap/screen/velocity/rollover/combined/disclosure/leak-audit tests      | `packages/foundry/test/Corridor.t.sol` (new)       |
-| real Sepolia corridor tx hashes                                        | `DEPLOYMENTS.md` (Phase C — needs funded key)      |
-| sandbox off-ramp listener                                              | backend service (Phase C2 — needs PSP sandbox key) |
-| Sealed Corridor UI (operator / sender / officer + scout's-eye)         | `packages/nextjs` (Phase D)                        |
+| Design element                                                         | Where it lives                             |
+| ---------------------------------------------------------------------- | ------------------------------------------ |
+| `complianceOfficer` + `commitMandateFor` + `settleCorridor` (additive) | `packages/foundry/src/Cloistra.sol`        |
+| velocity accumulator, three-rule predicate, officer grants             | `packages/foundry/src/orders/Corridor.sol` |
+| cap/screen/velocity/rollover/combined/disclosure/leak-audit tests      | `packages/foundry/test/Corridor.t.sol`     |
+| live Sepolia corridor tx hashes and payout evidence                    | `DEPLOYMENTS.md`                           |
+| off-ramp listener (officer decrypt → sandbox payout)                   | `packages/offramp`                         |
+| corridor UI (operator / sender / officer + scout's-eye)                | `packages/nextjs`                          |

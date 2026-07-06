@@ -44,7 +44,7 @@ export function useSenderTransfer() {
       setLastTx(undefined);
       try {
         setPhase("encrypting");
-        setMessage("Encrypting your amount client-side — the browser never holds the FHE key.");
+        setMessage("Encrypting your amount client-side — no decryption key ever exists in the browser.");
         const enc = await encrypt.mutateAsync({
           values: [{ value: amount, type: "euint64" }],
           contractAddress: corridor,

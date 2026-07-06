@@ -1,14 +1,15 @@
-# CLOISTRA / CLOISTRA Contracts
+# CLOISTRA Contracts
 
 This package contains the Solidity side of CLOISTRA. `Cloistra.sol` is the sealed-mandate engine; `orders/Corridor.sol`
-is the CLOISTRA product contract that turns the engine into a sealed compliance corridor.
+is the corridor contract that turns the engine into a sealed compliance corridor. All confidential state is FHEVM
+ciphertext (`@fhevm/solidity`), and all disclosure is governed by on-chain ACL grants.
 
 ## Contract Map
 
 ```text
 src/
-├── Cloistra.sol                     # sealed-mandate engine
-├── orders/Corridor.sol               # CLOISTRA corridor + sealed velocity accumulator
+├── Cloistra.sol                      # sealed-mandate engine
+├── orders/Corridor.sol               # corridor + sealed velocity accumulator
 ├── orders/Leash.sol                  # Order I composability proof
 ├── orders/SealedSettlement.sol       # Order II cross-contract proof
 ├── orders/ConfidentialFeed.sol       # independent sealed feed for Order II
@@ -33,5 +34,5 @@ From the repo root:
 scripts/deploy-cloistra-sepolia.sh
 ```
 
-That deploys the shared CLOISTRA backbone for CLOISTRA: engine, demo confidential token, and `ConfidentialFeed`.
-The CLOISTRA `Corridor` is deployed per mandate after the operator encrypts the policy inputs.
+That deploys the shared backbone: engine, demo confidential token, and `ConfidentialFeed`. The `Corridor` is
+deployed per mandate after the operator encrypts the policy inputs.

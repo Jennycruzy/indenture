@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: BSD-3-Clause-Clear
 pragma solidity ^0.8.27;
 
 import {ZamaEthereumConfig} from "@fhevm/solidity/config/ZamaConfig.sol";
@@ -66,7 +66,7 @@ contract SealedSettlement is ZamaEthereumConfig {
         FHE.allowThis(strike); // this contract computes on the strike each exercise
         FHE.allowThis(notional); // and passes the notional to the engine
         // Writer-only audit rights. The buyer and public are granted NOTHING: the strike is sealed
-        // even after settlement, and the buyer cannot learn the notional (Evidence Gate 3).
+        // even after settlement, and the buyer cannot learn the notional.
         FHE.allow(strike, msg.sender);
         FHE.allow(notional, msg.sender);
         _strike = strike;

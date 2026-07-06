@@ -15,6 +15,8 @@ Status: CLOISTRA backbone and first Sepolia `Corridor` are deployed and verified
 
 Feed publisher: `0x69eb1bAA26BffCD0fA9089aa2187F6Ca3e2A54f6`
 
+Source pin: the byte-exact source verified on Etherscan for the addresses above is git tag [`sepolia-v1`](https://github.com/Jennycruzy/Cloistra/releases/tag/sepolia-v1). Contracts on `main` after that tag differ only in the SPDX license header (aligned to BSD-3-Clause-Clear) and two doc comments; the next fresh deployment will byte-match `main` again.
+
 Corridor parameters:
 
 - Mandate id: `0x3d22c2c7a148f039136b47757e1eb1f365e6506be096709b10249e9c286967b0`

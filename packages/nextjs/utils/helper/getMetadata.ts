@@ -3,18 +3,18 @@ import type { Metadata } from "next";
 const baseUrl = process.env.VERCEL_PROJECT_PRODUCTION_URL
   ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
   : `http://localhost:${process.env.PORT || 3000}`;
-const titleTemplate = "%s | helper 2";
+const titleTemplate = "%s | CLOISTRA";
 
 export const getMetadata = ({
   title,
   description,
-  imageRelativePath = "/thumbnail.jpg",
+  imageRelativePath,
 }: {
   title: string;
   description: string;
   imageRelativePath?: string;
 }): Metadata => {
-  const imageUrl = `${baseUrl}${imageRelativePath}`;
+  const images = imageRelativePath ? [{ url: `${baseUrl}${imageRelativePath}` }] : undefined;
 
   return {
     metadataBase: new URL(baseUrl),
@@ -29,11 +29,7 @@ export const getMetadata = ({
         template: titleTemplate,
       },
       description: description,
-      images: [
-        {
-          url: imageUrl,
-        },
-      ],
+      images,
     },
     twitter: {
       title: {
@@ -41,7 +37,7 @@ export const getMetadata = ({
         template: titleTemplate,
       },
       description: description,
-      images: [imageUrl],
+      images,
     },
     icons: {
       icon: [

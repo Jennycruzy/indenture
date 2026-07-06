@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: BSD-3-Clause-Clear
 pragma solidity ^0.8.27;
 
 import {ZamaEthereumConfig} from "@fhevm/solidity/config/ZamaConfig.sol";
@@ -37,7 +37,7 @@ contract Cloistra is ZamaEthereumConfig {
         address principal; // commits/rotates/funds the mandate (CLOISTRA: the corridor operator)
         // The ONLY address granted decrypt rights (the audit role). Defaults to `principal` for legacy
         // mandates (`commitMandate`); a CLOISTRA corridor sets a DISTINCT compliance officer via
-        // `commitMandateFor`, so the operator commits the policy but can never read it (Phase B step 3).
+        // `commitMandateFor`, so the operator commits the policy but can never read it (CLOISTRA_DESIGN.md §5).
         address complianceOfficer;
         address agent; // authorized settler (an EOA agent, or a consumer contract); BLIND
         IERC7984 token; // custody token
@@ -111,7 +111,7 @@ contract Cloistra is ZamaEthereumConfig {
 
     /// @notice CLOISTRA: commit a sealed mandate with a DISTINCT compliance officer as the audit role.
     ///         The operator (msg.sender) commits, funds, and screens, but is granted NO decrypt rights;
-    ///         only `complianceOfficer` may decrypt the sealed policy and flagged outcomes (Phase B §3).
+    ///         only `complianceOfficer` may decrypt the sealed policy and flagged outcomes (CLOISTRA_DESIGN.md §5).
     function commitMandateFor(
         bytes32 id,
         address agent,

@@ -1,10 +1,50 @@
 # CLOISTRA
 
-CLOISTRA is a confidential compliance corridor for cross-border transfers.
+CLOISTRA is a confidential compliance corridor for cross-border transfers, built on fully homomorphic encryption via the FHEVM.
 
-It encrypts more than the payment amount. The compliance rulebook itself is sealed: transfer caps, recipient screening, and per-sender velocity ceilings are committed as ciphertext and checked on-chain without exposing the thresholds. A transfer either moves the encrypted amount or settles to encrypted zero, and the public event stream does not reveal which rule decided the outcome.
+It encrypts more than the payment amount. The compliance rulebook itself is sealed: transfer caps, recipient screening, and per-sender velocity ceilings are committed as FHE ciphertext and checked on-chain homomorphically — the thresholds are never decrypted, not even to be enforced. A transfer either moves the encrypted amount or settles to encrypted zero, and the public event stream does not reveal which rule decided the outcome.
 
-The result is a payment corridor where senders, operators, outside observers, and competitors cannot probe the policy boundary, while a designated compliance officer can decrypt selected handles for audit.
+The result is a payment corridor where senders, operators, outside observers, and competitors cannot probe the policy boundary, while a designated compliance officer can decrypt selected handles for audit via threshold user-decryption.
+
+## The Problem
+
+Every payment corridor runs on compliance thresholds: a cap per transfer, a screening list, a velocity ceiling per sender. Today those thresholds are effectively public — and a published boundary is an exploitable one:
+
+- **Launderers structure under it.** If the cap is visible, transfers arrive at cap-minus-one, split and paced to slide exactly beneath the ceiling.
+- **Bad actors probe it.** Even without the number, a corridor that _rejects_ a transfer reveals where the line is; a few probing payments map the whole rulebook.
+- **Insiders leak it.** The operator's own staff can read the risk model, so it travels — to competitors and to the people it is supposed to catch.
+- **Competitors copy it.** A corridor's screening and velocity model is its underwriting edge, and publishing it on-chain gives that edge away.
+
+Confidential-payment systems so far encrypt the **amount** but publish the **rules**, so none of this changes. The fix has to be a rulebook that is _enforced by everyone but readable by no one_ — and a transfer that fails must die silently (settle to encrypted zero) so even the fact of rejection teaches an attacker nothing. That is what CLOISTRA builds. Crucially, sealed cannot mean unaccountable: a designated compliance officer must still be able to decrypt a flagged transfer for lawful audit.
+
+## Why We Built It on Zama's FHEVM
+
+A rulebook with those properties cannot be built from ordinary encryption or zero-knowledge alone: a ZK prover must know the policy to prove against it, and plain ciphertext cannot be compared on-chain. Fully homomorphic encryption is the one primitive that lets a public contract evaluate `amount ≤ cap`, `spent + amount ≤ ceiling`, and `recipient allowed?` while every operand stays encrypted.
+
+Zama's FHEVM protocol is what turns that primitive into a deployable Ethereum contract — and it supplies every layer this build needs, live on Sepolia today: the `@fhevm/solidity` library for homomorphic operations in Solidity, the coprocessor that executes them, the on-chain ACL that turns "who may read what" into an enforced contract-level policy, the input verifier that rejects forged ciphertexts at the transaction boundary, and the relayer + threshold KMS that make officer audit a cryptographic user-decryption instead of a trusted server. The client story is covered by the same stack: `@zama-fhe/react-sdk` in the browser, `@zama-fhe/sdk` in the server-side off-ramp, and `forge-fhevm` for the test harness. No other stack offers this end to end.
+
+CLOISTRA exercises the depth of that stack, not just encrypted storage:
+
+- **Homomorphic policy evaluation** — five rules folded into one encrypted predicate, settled by a single `FHE.select` that leaks nothing, not even which rule failed.
+- **The ACL as a compliance instrument** — the operator commits the policy but holds no decrypt rights over it; the corridor contract receives compute-only transient grants; only the compliance officer can decrypt. "Private to the world, accountable to the regulator" is written directly in ACL grants.
+- **Cross-contract ciphertext composition** — the corridor chains the engine's sealed `moved` outcome into its encrypted velocity accumulator in the same transaction without decrypting it, and an independent feed's ciphertext enters the settlement predicate across a contract boundary.
+- **Threshold user-decryption as the audit path** — officer audit in the browser and the fiat off-ramp gate on the server both run real EIP-712 user-decryptions through the relayer and threshold KMS.
+
+## FHE At Every Confidential Boundary
+
+Every sealed, confidential, or private value in CLOISTRA is FHEVM ciphertext, and every operation on one is homomorphic. There is no secondary privacy mechanism — no trusted server, no commit-reveal, no plaintext mirror anywhere.
+
+| Confidential surface                               | How it is implemented                                                                                                                                                            |
+| -------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Policy values (caps, drawdown, screening, ceiling) | `euint64` / `ebool` from [`@fhevm/solidity`](https://github.com/zama-ai/fhevm); compared with `FHE.le` / `FHE.ge` / `FHE.and`, never decrypted on-chain                          |
+| Settlement outcome                                 | one `FHE.select` yields the moved amount or encrypted zero — no branch, no pass/fail bit, nothing to observe                                                                     |
+| Encrypted inputs                                   | `FHE.fromExternal` with input-verification proofs — a forged or proofless ciphertext reverts on-chain at the input boundary                                                      |
+| Who may read what                                  | the FHEVM on-chain ACL (`FHE.allow` / `FHE.allowThis` / `FHE.allowTransient`) — officer-only audit, blind operator, and blind agent are all expressed and enforced as ACL grants |
+| Custody token                                      | ERC-7984 confidential token (OpenZeppelin confidential-contracts, FHEVM-native) — balances and transfer amounts are ciphertext                                                   |
+| Browser encryption                                 | `useEncrypt` from `@zama-fhe/react-sdk` — amounts are encrypted client-side; no decryption key ever exists in the browser                                                        |
+| Officer audit (frontend)                           | `useUserDecrypt` from `@zama-fhe/react-sdk` — EIP-712-authorized user-decryption through the FHEVM relayer and threshold KMS                                                     |
+| Off-ramp gate (server)                             | `ZamaSDK` from `@zama-fhe/sdk` — the listener performs a genuine relayer user-decryption as the compliance officer before any fiat payout fires; never a plaintext lookup        |
+| Chain wiring                                       | `ZamaEthereumConfig` selects the FHEVM host, ACL, KMS verifier, and input verifier by chainId — no hardcoded infrastructure addresses                                            |
 
 ## What Is Built
 
