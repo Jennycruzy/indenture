@@ -77,6 +77,16 @@ export const corridorAbi = [
   },
   {
     type: "function",
+    name: "setCeiling",
+    stateMutability: "nonpayable",
+    inputs: [
+      { name: "ceilingExt", type: "bytes32" },
+      { name: "inputProof", type: "bytes" },
+    ],
+    outputs: [],
+  },
+  {
+    type: "function",
     name: "transfer",
     stateMutability: "nonpayable",
     inputs: [
