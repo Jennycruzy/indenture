@@ -31,8 +31,9 @@ const scaffoldConfig = {
   // If you want to use a different RPC for a specific network, you can add it here.
   // The key is the chain ID, and the value is the HTTP RPC URL
   rpcOverrides: {
-    // Example:
-    // [chains.mainnet.id]: "https://mainnet.rpc.buidlguidl.com",
+    // Alchemy sometimes 400s on eth_getLogs for this app; use a reliable public
+    // Sepolia RPC that serves historical logs. Falls back to the chain default.
+    [sepolia.id]: "https://sepolia.drpc.org",
   },
   // This is ours WalletConnect's default project ID.
   // You can get your own at https://cloud.walletconnect.com

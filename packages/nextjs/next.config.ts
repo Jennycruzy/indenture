@@ -3,6 +3,21 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   reactStrictMode: true,
   devIndicators: false,
+  // The Zama FHE SDK encrypts + proves inside a Web Worker that needs
+  // SharedArrayBuffer for multithreading. Without cross-origin isolation it
+  // falls back to single-threaded and the encrypt hangs/times out. These
+  // headers turn on crossOriginIsolated so the worker runs multithreaded.
+  async headers() {
+    return [
+      {
+        source: "/(.*)",
+        headers: [
+          { key: "Cross-Origin-Opener-Policy", value: "same-origin" },
+          { key: "Cross-Origin-Embedder-Policy", value: "credentialless" },
+        ],
+      },
+    ];
+  },
   typescript: {
     ignoreBuildErrors: process.env.NEXT_PUBLIC_IGNORE_BUILD_ERROR === "true",
   },
