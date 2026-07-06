@@ -25,6 +25,14 @@ const signer = new WagmiSigner({ config: wagmiConfig });
 const storage = new IndexedDBStorage("KeypairStore", 1);
 const sessionStorage = new IndexedDBStorage("SignatureStore", 1);
 
+function fheWorkerThreads() {
+  if (typeof window === "undefined") return undefined;
+  // Zama's browser SDK defaults to single-threaded proving. That can exceed
+  // its 30s ENCRYPT worker timeout for euint64 inputs, even though the app is
+  // already served with COOP/COEP headers for SharedArrayBuffer.
+  return Math.min(Math.max(navigator.hardwareConcurrency || 4, 4), 8);
+}
+
 export const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -47,6 +55,7 @@ const ZamaRuntimeProvider = ({ children }: { children: React.ReactNode }) => {
       transports: {
         [SepoliaConfig.chainId]: SepoliaConfig,
       },
+      threads: fheWorkerThreads(),
     });
   }, [chainId]);
 
