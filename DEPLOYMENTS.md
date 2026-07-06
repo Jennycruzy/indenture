@@ -6,6 +6,13 @@
 
 Status: CLOISTRA backbone and first Sepolia `Corridor` are deployed and verified on Etherscan.
 
+Runtime hosting:
+
+- Frontend: deployable on Vercel from `packages/nextjs` with only `NEXT_PUBLIC_*` configuration.
+- Off-ramp: deployed permanently on an always-on VPS as the `cloistra-offramp` systemd service from `/opt/cloistra/app`.
+- Runtime coupling: none between Vercel and the VPS. Sepolia events are the integration point; the listener watches the engine/corridor and pays only after officer decryption confirms `moved > 0`.
+- Provider posture: Flutterwave sandbox only; the VPS egress IP is whitelisted in Flutterwave for API transfers.
+
 | Contract                | Address                                                                                                                         | Tx                                                                                                                                                                         |      Block |  Gas used |
 | ----------------------- | ------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------: | --------: |
 | `Cloistra` engine       | [`0xF34694B35841ceA17acc9Fb86D2b5bd3Ac276Eee`](https://sepolia.etherscan.io/address/0xF34694B35841ceA17acc9Fb86D2b5bd3Ac276Eee) | [`0x464044567c3620035d9ae942b85ff371d24e58f8d3536e8bbe4a1fab8b322127`](https://sepolia.etherscan.io/tx/0x464044567c3620035d9ae942b85ff371d24e58f8d3536e8bbe4a1fab8b322127) | 11,210,843 |   513,140 |

@@ -128,6 +128,13 @@ The listener pairs:
 
 The payout provider is behind a typed `PayoutProvider` interface, so additional rails can be added without changing the corridor contracts.
 
+For the hosted demo, the frontend and listener are intentionally split:
+
+- the Next.js app can run on Vercel because encryption, wallet signing, chain reads, and officer browser decrypts are client-side flows against Sepolia and the Zama relayer
+- the off-ramp listener runs permanently on an always-on VPS as `cloistra-offramp.service`, because it is a long-lived Sepolia event watcher with a Node/FHE worker
+
+There is no HTTP dependency between Vercel and the VPS. The frontend writes Sepolia transactions; the VPS reads Sepolia events and triggers Flutterwave sandbox payouts after officer decryption confirms `moved > 0`.
+
 ## Repository Layout
 
 ```text
@@ -227,6 +234,19 @@ The app exposes three operational views:
 
 The UI also includes a scout's-eye mode showing what an outside observer can infer: addresses, ordering, nonces, receipt hashes, and ciphertext handles, but not limits, amounts, screening decisions, or pass/fail reasons.
 
+### Vercel Environment
+
+The hosted frontend only needs public browser configuration:
+
+```text
+NEXT_PUBLIC_ALCHEMY_API_KEY=<Alchemy Sepolia API key>
+NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID=<WalletConnect project id>
+NEXT_PUBLIC_CORRIDOR_ADDRESS=0x4A3c965edb96f74451fe5921686e44CbFF4a8A7b
+NEXT_PUBLIC_CLOISTRA_DEPLOY_BLOCK=11210843
+```
+
+Do not put off-ramp secrets in Vercel. `OFFICER_PRIVATE_KEY`, `FLW_SECRET_KEY`, `SEPOLIA_RPC_URL`, `BENEFICIARIES_JSON`, and related listener env vars belong only on the VPS.
+
 ## Verification
 
 The main gate is:
@@ -257,7 +277,7 @@ pnpm --filter ./packages/nextjs build
 - Local tests use Zama's cleartext FHEVM harness.
 - Live encrypted execution and user-decryption require supported FHEVM infrastructure.
 - Private keys and provider credentials stay server-side.
-- The off-ramp listener must run outside the frontend.
+- The off-ramp listener must run outside the frontend; the hosted demo runs it as a persistent VPS systemd service.
 - Provider payout logic should only execute after authorized officer decryption confirms `moved > 0`.
 
 ## License

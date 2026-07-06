@@ -40,6 +40,44 @@ cp packages/offramp/.env.example packages/offramp/.env.local   # fill in the val
 pnpm --filter @cloistra/offramp start        # or `dev` for watch mode
 ```
 
+## Permanent Deployment
+
+The demo frontend can live on Vercel, but this listener must run on an always-on host. It keeps a long-lived
+Sepolia event subscription and loads the FHE worker, so it is not suitable for Vercel serverless functions.
+
+Current demo topology:
+
+- Vercel serves the Next.js app and browser-side wallet/FHE flows.
+- A VPS runs this package as a systemd service named `cloistra-offramp`.
+- The two hosts do not call each other. Sepolia is the shared coordination layer: the frontend submits corridor
+  transactions, and the VPS listener watches the deployed engine/corridor and triggers Flutterwave sandbox payouts.
+
+Expected VPS layout:
+
+```text
+/opt/cloistra/app
+  packages/offramp/.env.local   # 0600, owned by the service user
+/etc/systemd/system/cloistra-offramp.service
+```
+
+Service command:
+
+```bash
+/usr/local/bin/pnpm --dir /opt/cloistra/app --filter @cloistra/offramp start
+```
+
+Operational commands:
+
+```bash
+systemctl status cloistra-offramp
+systemctl restart cloistra-offramp
+journalctl -u cloistra-offramp -f
+```
+
+The VPS egress IP must be whitelisted in Flutterwave before sandbox transfers can succeed. If the listener is
+down during a settlement, replay the missed block with `scripts/process-corridor-block.ts`; payout references are
+idempotent by `(corridor, nonce)`.
+
 ## Officer decryption
 
 `ZamaOfficerDecryptor` (`src/officer.ts`) performs a real FHEVM user-decryption via `@zama-fhe/sdk` v3: a

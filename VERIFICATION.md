@@ -24,3 +24,5 @@ CLOISTRA uses `ZamaEthereumConfig`, so deployment is only meaningful on networks
 The off-ramp package is a server-side listener. It officer-decrypts the sealed `moved` amount and calls the configured payout provider only when `moved > 0`.
 
 The current provider adapter is Flutterwave v3 Transfers for Nigeria / NGN. In sandbox mode it simulates payout flow using test credentials and test bank details. That is not production naira movement. Production naira requires a live Flutterwave account, live funding balance, production keys, supported recipient bank details, and the relevant compliance approvals.
+
+The hosted demo runs the listener permanently on a VPS under systemd. Vercel hosts only the browser frontend; it does not run the listener and it does not hold officer or payout-provider secrets. The split is intentional: Vercel submits Sepolia transactions through user wallets, while the VPS watches Sepolia and handles the server-side officer decrypt plus Flutterwave sandbox payout.

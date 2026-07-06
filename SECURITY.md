@@ -14,4 +14,5 @@ Issues in the underlying FHEVM stack itself (`@fhevm/solidity`, the relayer, the
 
 - Private keys and payout-provider credentials are server-side only; nothing secret ships to the frontend.
 - The off-ramp listener must run outside the browser and pays out only after an authorized officer user-decryption confirms `moved > 0`.
+- The hosted demo keeps that listener on an always-on VPS as a systemd service; Vercel must only receive public `NEXT_PUBLIC_*` frontend configuration.
 - Decrypt rights are governed exclusively by on-chain ACL grants; no role can read a sealed value it was not granted.
