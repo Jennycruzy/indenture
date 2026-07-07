@@ -63,15 +63,19 @@ export default function SenderPage() {
                   className="ob-mono text-[0.7rem] uppercase tracking-wider"
                   style={{ color: "var(--ob-ink-dim)" }}
                 >
-                  amount (sealed)
+                  amount (sealed clUSD)
                 </label>
                 <input
                   className="cloistra-input"
-                  placeholder="amount — encrypted before it leaves your browser"
+                  placeholder="clUSD units — encrypted before they leave your browser"
                   value={amount}
                   onChange={e => setAmount(e.target.value)}
                   inputMode="numeric"
                 />
+                <p className="text-[0.78rem]" style={{ color: "var(--ob-ink-dim)" }}>
+                  This demo uses <span className="ob-mono">clUSD</span>, an ERC-7984 confidential demo token. The
+                  operator pre-funds sealed custody; you submit only an encrypted amount against that custody.
+                </p>
 
                 {!ceilingSet && (
                   <div className="ob-mono text-[0.72rem]" style={{ color: "var(--ob-warm-a)" }}>

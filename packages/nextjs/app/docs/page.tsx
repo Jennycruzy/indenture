@@ -410,9 +410,15 @@ export default function Docs() {
           ]}
         />
         <p>
-          All four are verified on Etherscan. The full loop has been closed more than once — an encrypted transfer
-          clearing every sealed rule onchain, officer-decrypted through the KMS, and disbursed as a successful sandbox
-          payout — most recently at{" "}
+          The demo token in this corridor is <Code>clUSD</Code>, an ERC-7984 confidential token minted on Sepolia for
+          custody testing. The operator pre-funds sealed custody with that token; the sender does not receive a visible
+          balance and submits only an encrypted amount. In the sandbox off-ramp, decrypted <Code>moved</Code> units map
+          1:1 to NGN for evidence capture.
+        </p>
+        <p>
+          All four contracts are verified on Etherscan. The full loop has been closed more than once — an encrypted
+          transfer clearing every sealed rule onchain, officer-decrypted through the KMS, and disbursed as a successful
+          sandbox payout — most recently at{" "}
           <a
             href="https://sepolia.etherscan.io/tx/0x0a3da67bd1e87d29f151a115a18786c8282f990dbc98318af6042da69decbfb1"
             target="_blank"
@@ -420,9 +426,9 @@ export default function Docs() {
           >
             nonce 12
           </a>
-          , decrypted to <Code>moved = 100</Code> and paid as 100 NGN (provider reference <Code>…-12_PMCKDU_1</Code>,
-          status SUCCESSFUL). Per-transaction evidence, blocks, and gas figures live in the repository&rsquo;s{" "}
-          <Code>DEPLOYMENTS.md</Code>.
+          , decrypted to <Code>moved = 100 clUSD</Code> and paid as 100 NGN (provider reference{" "}
+          <Code>…-12_PMCKDU_1</Code>, status SUCCESSFUL). Per-transaction evidence, blocks, and gas figures live in the
+          repository&rsquo;s <Code>DEPLOYMENTS.md</Code>.
         </p>
       </Section>
 
