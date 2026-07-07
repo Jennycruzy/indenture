@@ -27,10 +27,11 @@ const sessionStorage = new IndexedDBStorage("SignatureStore", 1);
 
 function fheWorkerThreads() {
   if (typeof window === "undefined") return undefined;
-  // Zama's browser SDK defaults to single-threaded proving. That can exceed
-  // its 30s ENCRYPT worker timeout for euint64 inputs, even though the app is
-  // already served with COOP/COEP headers for SharedArrayBuffer.
-  return Math.min(Math.max(navigator.hardwareConcurrency || 4, 4), 8);
+  // Only request WASM threads when the browser actually exposed SharedArrayBuffer.
+  // Some demo/browser profiles lose cross-origin isolation because of extensions,
+  // cached headers, or preview hosts; forcing threads there makes worker init fail.
+  if (!window.crossOriginIsolated || typeof SharedArrayBuffer === "undefined") return undefined;
+  return Math.min(Math.max(navigator.hardwareConcurrency || 4, 4), 4);
 }
 
 export const queryClient = new QueryClient({
