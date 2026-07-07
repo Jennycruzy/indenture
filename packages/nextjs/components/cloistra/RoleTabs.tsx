@@ -5,7 +5,6 @@ import { usePathname } from "next/navigation";
 import { useCorridor } from "~~/hooks/cloistra/useCorridor";
 
 const TABS = [
-  { href: "/", label: "Overview", role: null },
   { href: "/playground", label: "Playground", role: "sender" },
   { href: "/operator", label: "Operator", role: "operator" },
   { href: "/sender", label: "Sender", role: "sender" },
