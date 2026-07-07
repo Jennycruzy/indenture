@@ -11,9 +11,11 @@ import { useCloistraStore } from "~~/hooks/cloistra/store";
  *  scout's-eye toggle, and the active-corridor bar. */
 export function CloistraShell({
   children,
+  showRoleTabs = true,
   showCorridorBar = true,
 }: {
   children: React.ReactNode;
+  showRoleTabs?: boolean;
   showCorridorBar?: boolean;
 }) {
   const scout = useCloistraStore(s => s.scoutMode);
@@ -42,7 +44,7 @@ export function CloistraShell({
           </div>
         </header>
 
-        <RoleTabs />
+        {showRoleTabs && <RoleTabs />}
 
         {scout && (
           <div className="ob-card p-3 ob-mono text-[0.72rem]" style={{ color: "var(--ob-ink-dim)" }}>
