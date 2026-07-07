@@ -4,7 +4,7 @@ import { useCallback, useState } from "react";
 import { useEncrypt } from "@zama-fhe/react-sdk";
 import { bytesToHex } from "viem";
 import type { Address, Hex } from "viem";
-import { useAccount, useReadContract, useWriteContract } from "wagmi";
+import { useAccount, usePublicClient, useReadContract, useWriteContract } from "wagmi";
 import { cloistraAbi } from "~~/contracts/cloistra/Cloistra";
 import { corridorAbi } from "~~/contracts/cloistra/Corridor";
 import { demoConfidentialTokenAbi } from "~~/contracts/cloistra/DemoConfidentialToken";
@@ -25,8 +25,9 @@ function errMsg(e: unknown): string {
 export type GatePhase = "idle" | "encrypting" | "adjudicating" | "sealed" | "error";
 
 export function useSenderTransfer() {
-  const { address: corridor, nonce, ceilingSet, refetch } = useCorridor();
+  const { address: corridor, engine, mandateId, nonce, ceilingSet, refetch } = useCorridor();
   const { address: account } = useAccount();
+  const publicClient = usePublicClient();
   const encrypt = useEncrypt();
   const { writeContractAsync } = useWriteContract();
 
@@ -40,7 +41,7 @@ export function useSenderTransfer() {
 
   const submit = useCallback(
     async (recipient: Address, amount: bigint) => {
-      if (!corridor || !account || nonce === undefined) return;
+      if (!corridor || !engine || !mandateId || !account || !publicClient || nonce === undefined) return;
       setLastTx(undefined);
       try {
         setPhase("encrypting");
@@ -51,16 +52,26 @@ export function useSenderTransfer() {
           userAddress: account,
         });
 
+        const freshNonce = (await publicClient.readContract({
+          address: engine,
+          abi: cloistraAbi,
+          functionName: "mandateNonce",
+          args: [mandateId],
+        })) as bigint;
+
         setPhase("adjudicating");
-        setMessage("Adjudicating against the sealed rulebook onchain…");
+        setMessage("Submitting against the sealed rulebook with the latest mandate nonce…");
         const tx = await writeContractAsync({
           address: corridor,
           abi: corridorAbi,
           functionName: "transfer",
-          args: [nonce, recipient, bytesToHex(enc.handles[0]!), bytesToHex(enc.inputProof)],
+          args: [freshNonce, recipient, bytesToHex(enc.handles[0]!), bytesToHex(enc.inputProof)],
           gas: FHE_GAS,
         });
         setLastTx(tx);
+        setMessage("Waiting for Sepolia confirmation so the next transfer cannot reuse a stale nonce…");
+        const receipt = await publicClient.waitForTransactionReceipt({ hash: tx });
+        if (receipt.status !== "success") throw new Error(`Transfer reverted: ${tx}`);
         setPhase("sealed");
         setMessage(
           "Adjudicated onchain. The outcome is sealed — even to you. Only the compliance officer can audit it.",
@@ -71,7 +82,7 @@ export function useSenderTransfer() {
         setMessage(errMsg(e));
       }
     },
-    [corridor, account, nonce, encrypt, writeContractAsync, refetch],
+    [corridor, engine, mandateId, account, publicClient, nonce, encrypt, writeContractAsync, refetch],
   );
 
   const reset = useCallback(() => {
